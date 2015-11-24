@@ -5,7 +5,7 @@ Possible class annotations:
     @Table table_name - this annotation is REQUIRED!
     @Primary table_column_name - OPTIONAL parameter for creating the column PRIMARY KEY
     @Foreign (column_name) References foreign_table_name(foreign_column_name) - OPTIONAL parameter - will add   FOREIGN KEY($column_name) References $foreign_table_name($foreign_column_name) to the sql query
-
+	
 Possible properties annotations:
     @Field column_name - REQUIRED! The name of the column in the table.
 	@Type column_type - REQUIRED! The type of the column.

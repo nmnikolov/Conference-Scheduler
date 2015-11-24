@@ -1,0 +1,1 @@
+{"muhaha\/ttt\/{int}\/aac\/{str}":{"controller":"HomeController","action":"test1","parameters":["{int}","aac","{str}"],"methods":["POST","GET"]},"test\/test":{"controller":"HomeController","action":"test2","parameters":[],"methods":["POST","GET"]}}
