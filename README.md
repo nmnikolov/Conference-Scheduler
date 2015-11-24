@@ -12,6 +12,7 @@ If you want some table to be created upon application start you must create a cl
 	- **@Null** - **OPTIONAL** parameter. Allow null values for the column. Omit this annotation if you want NOT NULL for the column.
 	- **@Primary** - **OPTIONAL** parameter. Add PRIMARY KEY for the column. **IMPORTANT!!! DO NO USE THIS ANNOTATION FOR PROPERTIES IF THE TABLE ALREADY HAS THE SAME ANNOTATION**
     - **@increment** - **OPTIONAL** parameter. Add AUTO_INCREMENT for the column.
+	
 ** Built-in Annotations **
 ==========================
 - **Route**
@@ -30,6 +31,7 @@ If you want some table to be created upon application start you must create a cl
 	- **@@Authorize** - checks for logged user. Redirects to users/login if there is no logged user.
 	- **@@Admin** - check if there is logged user and is in admin role (the name of the admin role can be changed from AppConfig class)
 	- **@@NotLogged** - check for logged user. Redirects to default controller and action if there is logged user.	
+	
 **Custom Annotations**
 ======================
 Users could create custom annotations:
