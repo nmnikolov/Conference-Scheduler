@@ -4,6 +4,9 @@ declare(strict_types=1);
 namespace Framework\Identity;
 
 use Framework\Database\Database;
+use Framework\Exceptions\ApplicationException;
+use Framework\Models\BindingModels\LoginBindingModel;
+use Framework\Models\BindingModels\RegisterBindingModel;
 use Framework\Models\BindingModels\UserEditBindingModel;
 
 class UserManager implements UserManagerInterface
@@ -32,29 +35,31 @@ class UserManager implements UserManagerInterface
     }
 
     /**
-     * @param string $username
-     * @param string $password
+     * @param RegisterBindingModel $model
      * @return int
      * @throws \Exception
      */
-    public function register(string $username, string $password) : int
+    public function register(RegisterBindingModel $model) : int
     {
         $db = Database::getInstance('app');
 
-        if ($username === '') {
-            throw new \Exception('Username cannot be empty');
+        if (self::usernameExists($model->getUserName())){
+            $_SESSION['binding-errors'][] = 'Username already exists.';
+            throw new ApplicationException("");
         }
 
-        if (self::exists($username)){
-            throw new \Exception('User already registered');
+        if ($model->getPassword() !== $model->getConfirmPassword()) {
+            $_SESSION['binding-errors'][] = 'Passwords does not match.';
+            throw new ApplicationException("");
         }
 
-        $result = $db->prepare("INSERT INTO users (username, password)
-          VALUES (?, ?)");
+        $result = $db->prepare("INSERT INTO users (username, password, fullname)
+          VALUES (?, ?, ?)");
 
         $result->execute([
-                $username,
-                password_hash($password, PASSWORD_DEFAULT)
+                $model->getUserName(),
+                password_hash($model->getPassword(), PASSWORD_DEFAULT),
+                $model->getFullName()
             ]
         );
 
@@ -62,33 +67,32 @@ class UserManager implements UserManagerInterface
             return intval($db->lastId());
         }
 
-        throw new \Exception('Cannot register user');
+        throw new ApplicationException('Cannot register user');
     }
 
     /**
-     * @param $username
-     * @param $password
+     * @param LoginBindingModel $model
      * @return mixed
      * @throws \Exception
      */
-    public function login(string $username, string $password) : string
+    public function login(LoginBindingModel $model) : string
     {
         $db = Database::getInstance('app');
 
         $result = $db->prepare("SELECT id, username, password FROM users WHERE username = ?");
-        $result->execute([$username]);
+        $result->execute([$model->getUsername()]);
 
-        if ($result->rowCount() === 0){
-            throw new \Exception("User does not exist");
+        if ($result->rowCount() > 0){
+            $userRow = $result->fetch();
+
+            if (password_verify($model->getPassword(), $userRow['password'])){
+                $_SESSION['userId'] = $userRow['id'];
+                return $userRow['id'];
+            }
         }
 
-        $userRow = $result->fetch();
-
-        if (password_verify($password, $userRow['password'])){
-            return $userRow['id'];
-        }
-
-        throw new \Exception("Passwords does not match");
+        $_SESSION["binding-errors"] = ["Wrong username or password!"];
+        throw new ApplicationException("");
     }
 
     /**
@@ -99,6 +103,41 @@ class UserManager implements UserManagerInterface
     public function edit(\Framework\Models\BindingModels\UserEditBindingModel $model) : bool
     {
         $db = Database::getInstance('app');
+
+        $result = $db->prepare("UPDATE users SET fullname = ? WHERE id = ?");
+        $result->execute([
+            $model->getFullName(),
+            $_SESSION['userId']
+        ]);
+
+        return $result->rowCount() > 0;
+    }
+
+    /**
+     * @param \Framework\Models\BindingModels\ChangePasswordBindingModel $model
+     * @return mixed
+     * @throws \Exception
+     */
+    public function changePassword(\Framework\Models\BindingModels\ChangePasswordBindingModel $model) : bool
+    {
+        if ($model->getPassword() != $model->getConfirmPassword()){
+            $_SESSION['binding-errors'] = ["Passwords does not match!"];
+            throw new ApplicationException('');
+        }
+
+        $db = Database::getInstance('app');
+
+        $result = $db->prepare("SELECT password FROM users WHERE id = ?");
+        $result->execute([
+            $_SESSION['userId']
+        ]);
+
+        $password = $result->fetch()["password"];
+
+        if (!password_verify($model->getCurrentPassword(), $password)) {
+            $_SESSION['binding-errors'] = ["Wrong current password!"];
+            throw new ApplicationException('');
+        }
 
         $result = $db->prepare("UPDATE users SET password = ? WHERE id = ?");
         $result->execute([
@@ -118,23 +157,38 @@ class UserManager implements UserManagerInterface
     {
         $db = Database::getInstance('app');
 
-        $result = $db->prepare("SELECT id, username, password FROM users WHERE id = ?");
+        $result = $db->prepare("SELECT id, username, password, fullname FROM users WHERE id = ?");
         $result->execute([$id]);
 
         return $result->fetch();
     }
 
     /**
-     * @param $username
+     * @param string $username
      * @return mixed
      * @throws \Exception
      */
-    public function exists(string $username) : bool
+    public function usernameExists(string $username) : bool
     {
         $db = Database::getInstance('app');
 
         $result = $db->prepare("SELECT id FROM users WHERE username = ?");
         $result->execute([$username]);
+
+        return $result->rowCount() > 0;
+    }
+
+    /**
+     * @param string $email
+     * @return mixed
+     * @throws \Exception
+     */
+    public function emailExists(string $email) : bool
+    {
+        $db = Database::getInstance('app');
+
+        $result = $db->prepare("SELECT id FROM users WHERE email = ?");
+        $result->execute([$email]);
 
         return $result->rowCount() > 0;
     }

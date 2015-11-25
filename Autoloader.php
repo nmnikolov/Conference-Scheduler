@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Framework;
 
 include 'Helpers/Helpers.php';
+use Framework\Exceptions\ApplicationException;
 use Framework\Helpers\Helpers;
 
 class Autoloader
@@ -14,9 +15,9 @@ class Autoloader
             $path = implode(DIRECTORY_SEPARATOR, $pathParams);
             $path = str_replace($pathParams[0], "", $path);
 
-
             if (!file_exists(substr($path . '.php', 1))) {
-                Helpers::redirect();
+                Helpers::redirect("error");
+                exit;
             }
 
             require_once $path . '.php';

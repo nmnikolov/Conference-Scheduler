@@ -5,6 +5,7 @@ namespace Framework;
 
 use Framework\Config\DatabaseConfig;
 use Framework\Database\Database;
+use Framework\Helpers\Helpers;
 use Framework\Helpers\Scanner;
 use Framework\ORM\Manager;
 
@@ -30,22 +31,23 @@ class App
     }
 
     public function start(){
-        Database::createNonExistingDatabase(DatabaseConfig::DB_NAME);
+        try{
+            Database::createNonExistingDatabase(DatabaseConfig::DB_NAME);
 
-//        var_dump(Scanner::getInstance()->getCustomRoutes());
-//        exit;
-
-        Database::setInstance(
-            DatabaseConfig::DB_INSTANCE,
-            DatabaseConfig::DB_DRIVER,
-            DatabaseConfig::DB_USER,
-            DatabaseConfig::DB_PASS,
-            DatabaseConfig::DB_NAME,
-            DatabaseConfig::DB_HOST
-        );
-
-        Manager::getInstance()->start();
+            Database::setInstance(
+                DatabaseConfig::DB_INSTANCE,
+                DatabaseConfig::DB_DRIVER,
+                DatabaseConfig::DB_USER,
+                DatabaseConfig::DB_PASS,
+                DatabaseConfig::DB_NAME,
+                DatabaseConfig::DB_HOST
+            );
+        } catch (\Exception $e){
+            require_once("error.php");
+            exit;
+        }
 
         $this->frontController->dispatch();
+        Manager::getInstance()->start();
     }
 }

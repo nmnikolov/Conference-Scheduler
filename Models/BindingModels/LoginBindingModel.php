@@ -6,12 +6,18 @@ namespace Framework\Models\BindingModels;
 class LoginBindingModel
 {
     /**
-     * @Require
+     * @Required
+     * @MinLength(3)
+     * @MaxLength(30)
+     * @Display(Username)
      */
     private $username;
 
     /**
-     * @Require
+     * @Required
+     * @MinLength(6)
+     * @MaxLength(30)
+     * @Display(Password)
      */
     private $password;
 

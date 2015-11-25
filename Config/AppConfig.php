@@ -6,7 +6,7 @@ namespace Framework\Config;
 class AppConfig
 {
     const DEFAULT_CONTROLLER = 'home';
-    const DEFAULT_ACTION = 'home';
+    const DEFAULT_ACTION = 'index';
     const DEFAULT_LAYOUT = 'default';
     const DEFAULT_VIEW = 'home';
     const DEFAULT_REDIRECTION = '';

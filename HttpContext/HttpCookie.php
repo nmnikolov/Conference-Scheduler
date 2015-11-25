@@ -7,18 +7,39 @@ use Framework\Interfaces\HttpCookieInterface;
 
 class HttpCookie implements HttpCookieInterface
 {
-    public function __get(string $key )
+    /**
+     * @var array
+     */
+    private $cookies = [];
+
+    /**
+     * @param string $key
+     * @return CookiePart
+     */
+    public function __get(string $key) : CookiePart
     {
-        return $this->$key;
+        if (array_key_exists($key, $this->cookies)) {
+            return $this->cookies[$key];
+        }
+        $cookie = new CookiePart($key);
+
+        return $cookie;
     }
 
+    /**
+     * @param string $key
+     * @param string $value
+     */
     public function __set(string $key, string $value)
     {
-        setcookie($key, $value);
-        $this->$key = $value;
+        $cookie = new CookiePart($key);
+        $cookie->$key = $value;
+        $this->cookies[$key] = $cookie;
     }
 
-    public function delete() {
-        var_dump("test");
+    public function removeCookie(string $key){
+        if (array_key_exists($key, $this->cookies)) {
+            unset($this->cookies[$key]);
+        }
     }
 }

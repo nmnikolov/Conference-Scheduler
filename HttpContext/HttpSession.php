@@ -7,5 +7,40 @@ use Framework\Interfaces\HttpSessionInterface;
 
 class HttpSession implements HttpSessionInterface
 {
+    /**
+     * @var array
+     */
+    private $sessions = [];
 
+    /**
+     * @param string $key
+     * @return SessionPart
+     */
+    public function __get(string $key) {
+        if (array_key_exists($key, $this->sessions)) {
+            return $this->sessions[$key];
+        }
+        $session = new SessionPart($key);
+
+        return $session;
+    }
+
+    /**
+     * @param string $key
+     * @param string $value
+     */
+    public function __set(string $key, string $value) {
+        $session = new SessionPart($key);
+        $session->$key = $value;
+        $this->sessions[$key] = $session;
+    }
+
+    /**
+     * @param string $key
+     */
+    public function removeSession(string $key){
+        if (array_key_exists($key, $this->sessions)) {
+            unset($this->sessions[$key]);
+        }
+    }
 }

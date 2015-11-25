@@ -3,11 +3,11 @@ declare(strict_types=1);
 
 namespace Framework\Models\ViewModels;
 
-class UserProfileViewModel
+class ChangePasswordViewModel
 {
     private $id;
     private $username;
-    private $fullName;
+    private $pass;
 
     /**
      * @return mixed
@@ -23,11 +23,11 @@ class UserProfileViewModel
      * @param $username
      * @param $pass
      */
-    public function __construct(string $username = "", string $id = "", string $fullName = "")
+    public function __construct($username = null, $pass = null, $id = null)
     {
         $this->setId($id)
             ->setUsername($username)
-            ->setFullName($fullName);
+            ->setPass($pass);
     }
 
     /**
@@ -44,9 +44,9 @@ class UserProfileViewModel
 
     /**
      * @param mixed $id
-     * @return UserProfileViewModel
+     * @return ChangePasswordViewModel
      */
-    public function setId($id) : UserProfileViewModel
+    public function setId($id) : ChangePasswordViewModel
     {
         $this->id = $id;
         return $this;
@@ -66,29 +66,34 @@ class UserProfileViewModel
 
     /**
      * @param mixed $username
-     * @return UserProfileViewModel
+     * @return ChangePasswordViewModel
      */
-    public function setUsername($username) : UserProfileViewModel
+    public function setUsername($username) : ChangePasswordViewModel
     {
         $this->username = $username;
         return $this;
     }
 
     /**
-     * @return string
+     * @return mixed
      */
-    public function getFullName() : string {
-        return $this->fullName;
+    public function getPass() : string
+    {
+        if ($this->pass !== null) {
+
+            return $this->pass;
+        }
+
+        return '';
     }
 
     /**
-     * @param string $fullname
-     * @return UserProfileViewModel
+     * @param mixed $pass
+     * @return ChangePasswordViewModel
      */
-    public function setFullName(string $fullName) {
-        $this->fullName = $fullName;
+    public function setPass($pass) : ChangePasswordViewModel
+    {
+        $this->pass = $pass;
         return $this;
     }
-
-
 }

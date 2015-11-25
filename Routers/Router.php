@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Framework\Routers;
 
 use Framework\Config\AppConfig;
+use Framework\Exceptions\ApplicationException;
 use Framework\Helpers\Helpers;
 use Framework\Helpers\Scanner;
 
@@ -13,17 +14,19 @@ class Router
     private $action = null;
     private $params = [];
     private $customRoutes = [];
+    private $requestStr = null;
 
     public function __construct() {
-        $this->parseURI();
+//        $this->parseURI();
     }
 
-    private function parseURI(){
+    public function parseURI(){
         $uri = $_SERVER['REQUEST_URI'];
         $self = $_SERVER['PHP_SELF'];
         $index = basename($self);
         $directories = str_replace($index, '', $self);
         $requestString = str_replace($directories, '', $uri);
+        $this->requestStr = $requestString;
         $requestParams = explode("/", $requestString);
 
         $this->controller = array_shift($requestParams);
@@ -103,6 +106,7 @@ class Router
     }
 
     private function checkBindingModel(){
+        $errors = [];
         $controller = AppConfig::CONTROLLERS_NAMESPACE
             . ucfirst($this->getControllerName())
             . AppConfig::CONTROLLERS_SUFFIX;
@@ -125,25 +129,22 @@ class Router
                     $paramClassFields = $paramReflectorClass->getProperties();
                     foreach($paramClassFields as $field) {
                         $doc = $field->getDocComment();
-                        $annotation = self::docBlockParser($doc);
+                        $annotations = self::getBindingModelAnnotations($doc);
                         $fieldName = $field->getName();
                         $setter = 'set' . $field->getName();
-                        if(!empty($annotation)){
-                            if (strtolower($annotation[0]) == '@require') {
-                                if (!isset($_POST[$fieldName])) {
-                                    $setter = 'set' . $field->getName();
-                                    $bindingModel->$setter("{$fieldName} is required");
-                                    continue;
-                                }
-                                $setter = 'set' . $field->getName();
-                                $bindingModel->$setter($_POST[$fieldName]);
-                            } else {
-                                if (isset($_POST[$fieldName])) {
-                                    $bindingModel->$setter($_POST[$fieldName]);
-                                }
-                            }
+                        $displayName = array_key_exists("Display", $annotations) ? $annotations["Display"] : $fieldName;
+
+                        if (array_key_exists("Required", $annotations) && !isset($_POST[$fieldName]) || strlen($_POST[$fieldName]) === 0 ) {
+                            $errors[] = $displayName . " is required.";
+                        } else if (array_key_exists("MinLength", $annotations) && isset($_POST[$fieldName]) && strlen($_POST[$fieldName]) < intval($annotations["MinLength"])) {
+                            $errors[] = "Min length for " . $displayName . " is " .  $annotations["MinLength"];
+                        } else if (array_key_exists("MaxLength", $annotations) && isset($_POST[$fieldName]) && strlen($_POST[$fieldName]) > intval($annotations["MaxLength"])){
+                            $errors[] = "Max length for " . $displayName . " is " .  $annotations["MaxLength"];
+                        } else {
+                            $bindingModel->$setter($_POST[$fieldName]);
                         }
                     }
+
                     $this->params[] = $bindingModel;
                 }
             } else if (count($this->params) < $count + 1){
@@ -155,6 +156,12 @@ class Router
             }
 
             $count++;
+        }
+
+        if (count($errors) > 0) {
+//            $_SESSION["binding-errors"] = implode("\n", $errors);
+            $_SESSION["binding-errors"] = $errors;
+            throw new ApplicationException("", $this->requestStr);
         }
     }
 
@@ -168,68 +175,17 @@ class Router
         }
     }
 
-    private static function docBlockParser($data){
-        preg_match_all('/(@\w+)(.*)\r?\n/', $data, $matches);
-        foreach($matches[0] as &$match){
-            $match = trim(preg_replace('/\s\s+/', '', $match));
+    private static function getBindingModelAnnotations($data) : array{
+        $annotations = [];
+        if(preg_match_all('/@(\w+)\s*\(([^\)]*)\)\s*\n/', $data, $matches)){
+            for ($i = 0; $i < count($matches[0]); $i++) {
+                $annotations[$matches[1][$i]] =  $matches[2][$i];
+            }
         }
-        return $matches[0];
+
+//        var_dump($annotations);
+//            exit;
+
+        return $annotations;
     }
-
-
-//    private function checkBindingModel(){
-//        $controller = AppConfig::CONTROLLERS_NAMESPACE
-//            . ucfirst($this->getControllerName())
-//            . AppConfig::CONTROLLERS_SUFFIX;
-//        $reflector = new \ReflectionClass($controller);
-//        $method = $reflector->getMethod($this->action);
-//        if(!$method->getParameters()){
-//            return;
-//        }
-//        $params = $method->getParameters();
-//
-//        $count = 0;
-//        foreach ($params as $param) {
-//            if ($param->getClass() !== null && class_exists($param->getClass()->getName(), false)) {
-//                $className = $param->getClass()->getName();
-//
-//                if (Helpers::endsWith($className, "BindingModel")) {
-//                    $paramReflectorClass = new \ReflectionClass($param->getClass()->getName());
-//                    $bindingModelName = $paramReflectorClass->getName();
-//                    $bindingModel = new $bindingModelName();
-//                    $paramClassFields = $paramReflectorClass->getProperties();
-//                    foreach($paramClassFields as $field) {
-//                        $doc = $field->getDocComment();
-//                        $annotation = self::docBlockParser($doc);
-//                        $fieldName = $field->getName();
-//                        $setter = 'set' . $field->getName();
-//                        if(!empty($annotation)){
-//                            if (strtolower($annotation[0]) == '@require') {
-//                                if (!isset($_POST[$fieldName])) {
-//                                    $setter = 'set' . $field->getName();
-//                                    $bindingModel->$setter("{$fieldName} is required");
-//                                    continue;
-//                                }
-//                                $setter = 'set' . $field->getName();
-//                                $bindingModel->$setter($_POST[$fieldName]);
-//                            } else {
-//                                if (isset($_POST[$fieldName])) {
-//                                    $bindingModel->$setter($_POST[$fieldName]);
-//                                }
-//                            }
-//                        }
-//                    }
-//                    $this->params[] = $bindingModel;
-//                }
-//            } else if (count($this->params) < $count + 1){
-//                throw new \Exception("Different parameters count!");
-//            } else if (preg_match('/@param ([^\s]+) \$' . $param->getName() . "/", $method->getDocComment(), $parameterType)){
-//                if ($parameterType[1] === "int") {
-//                    $this->params[$count] = intval($this->params[$count]);
-//                }
-//            }
-//
-//            $count++;
-//        }
-//    }
 }

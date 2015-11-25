@@ -6,44 +6,24 @@ namespace Framework\Models\BindingModels;
 class UserEditBindingModel
 {
     /**
-     * @Require
+     * @Required
+     * @MinLength(2)
+     * @MaxLength(30)
+     * @Display(Full Name)
      */
-    private $password;
-
-    /**
-     * @Require
-     */
-    private $confirmPassword;
-
-    /**
-     * @return string
-     */
-    public function getPassword() : string
-    {
-        return $this->password;
-    }
-
-    /**
-     * @param string $password
-     */
-    public function setPassword(string $password)
-    {
-        $this->password = $password;
-    }
+    private $fullName;
 
     /**
      * @return string
      */
-    public function getConfirmPassword() : string
-    {
-        return $this->confirmPassword;
+    public function getFullName() : string {
+        return $this->fullName;
     }
 
     /**
-     * @param string $confirmPassword
+     * @param string $fullName
      */
-    public function setConfirmPassword(string $confirmPassword)
-    {
-        $this->confirmPassword = $confirmPassword;
+    public function setFullName(string $fullName) {
+        $this->fullName = $fullName;
     }
 }

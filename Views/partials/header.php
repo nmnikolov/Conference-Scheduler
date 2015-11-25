@@ -28,23 +28,20 @@
 
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="navbar-collapse collapse" id="bs-example-navbar-collapse-9" aria-expanded="false">
-                <?php if(!isset($_SESSION['userId'])): ?>
+
                     <ul class="nav navbar-nav">
-                        <li><a href="<?= \Framework\Helpers\Helpers::url() . 'home'?>"><span class="glyphicon glyphicon-home"></span> Home</a></li>
+                        <li><a href="<?= \Framework\Helpers\Helpers::url() . 'home'?>"><span class="glyphicon glyphicon-home"></span></a></li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
-                        <li><a href="<?= \Framework\Helpers\Helpers::url() . 'users/login'?>" class="hvr-underline-reveal"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
-                        <li><a href="<?= \Framework\Helpers\Helpers::url() . 'users/register'?>" class="hvr-underline-reveal"><span class="glyphicon glyphicon-registration-mark"></span> Register</a></li>
+                        <?php if(isset($_SESSION['userId'])): ?>
+                            <li><a href="<?= \Framework\Helpers\Helpers::url() . 'users/profile'?>" class="hvr-underline-reveal"><span class="glyphicon glyphicon-user"></span></a></li>
+                            <li><a href="<?= \Framework\Helpers\Helpers::url() . 'users/password'?>"><span class="glyphicon glyphicon-lock"></span></a></li>
+                            <li><a href="<?= \Framework\Helpers\Helpers::url() . 'users/logout'?>" class="hvr-underline-reveal"><span class="glyphicon glyphicon-log-out"></span></a></li>
+                        <?php else: ?>
+                            <li><a href="<?= \Framework\Helpers\Helpers::url() . 'users/login'?>" class="hvr-underline-reveal"><span class="glyphicon glyphicon-log-in"></span></a></li>
+                            <li><a href="<?= \Framework\Helpers\Helpers::url() . 'users/register'?>" class="hvr-underline-reveal"><span class="glyphicon glyphicon-registration-mark"></span></a></li>
+                        <?php endif; ?>
                     </ul>
-                <?php else: ?>
-                    <ul class="nav navbar-nav">
-                        <li><a href="<?= \Framework\Helpers\Helpers::url() . 'home'?>"><span class="glyphicon glyphicon-home"></span> Home</a></li>
-                        <li><a href="<?= \Framework\Helpers\Helpers::url() . 'users/profile'?>" class="hvr-underline-reveal"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
-                    </ul>
-                    <ul class="nav navbar-nav navbar-right">
-                        <li><a href="<?= \Framework\Helpers\Helpers::url() . 'users/logout'?>" class="hvr-underline-reveal"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
-                    </ul>
-                <?php endif; ?>
                 </ul>
             </div><!-- /.navbar-collapse -->
         </div><!-- /.container-fluid -->

@@ -11,7 +11,7 @@ class HomeController extends BaseController
     /**
      * @return bool
      */
-    public function home() : bool
+    public function index() : bool
     {
         $viewModel = new TodosInformation();
 

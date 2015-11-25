@@ -3,23 +3,15 @@ declare(strict_types=1);
 
 namespace Framework\Models\BindingModels;
 
-class RegisterBindingModel
+class ChangePasswordBindingModel
 {
     /**
      * @Required
-     * @MinLength(3)
+     * @MinLength(6)
      * @MaxLength(30)
-     * @Display(Username)
+     * @Display(Current Password)
      */
-    private $userName;
-
-    /**
-     * @Required
-     * @MinLength(2)
-     * @MaxLength(30)
-     * @Display(Full name)
-     */
-    private $fullName;
+    private $currentPassword;
 
     /**
      * @Required
@@ -33,38 +25,24 @@ class RegisterBindingModel
      * @Required
      * @MinLength(6)
      * @MaxLength(30)
-     * @Display(Confirm password)
+     * @Display(Confirm Password)
      */
     private $confirmPassword;
 
     /**
      * @return string
      */
-    public function getUserName() : string
+    public function getCurrentPassword() : string
     {
-        return $this->userName;
+        return $this->currentPassword;
     }
 
     /**
-     * @param string $userName
+     * @param string $currentPassword
      */
-    public function setUserName(string $userName)
+    public function setCurrentPassword(string $currentPassword)
     {
-        $this->userName = $userName;
-    }
-
-    /**
-     * @return string
-     */
-    public function getFullName() : string {
-        return $this->fullName;
-    }
-
-    /**
-     * @param string $fullName
-     */
-    public function setFullName(string $fullName) {
-        $this->fullName = $fullName;
+        $this->currentPassword = $currentPassword;
     }
 
     /**
@@ -86,14 +64,16 @@ class RegisterBindingModel
     /**
      * @return string
      */
-    public function getConfirmPassword() : string {
+    public function getConfirmPassword() : string
+    {
         return $this->confirmPassword;
     }
 
     /**
      * @param string $confirmPassword
      */
-    public function setConfirmPassword(string $confirmPassword) {
+    public function setConfirmPassword(string $confirmPassword)
+    {
         $this->confirmPassword = $confirmPassword;
     }
 }

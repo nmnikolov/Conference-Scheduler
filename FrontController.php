@@ -5,6 +5,9 @@ namespace Framework;
 
 use Framework\Annotations\AnnotationsParser;
 use Framework\Config\AppConfig;
+use Framework\Config\DatabaseConfig;
+use Framework\Database\Database;
+use Framework\Exceptions\ApplicationException;
 use Framework\Helpers\Helpers;
 use Framework\Helpers\Scanner;
 use Framework\ORM\Manager;
@@ -16,32 +19,47 @@ class FrontController
     private $requestParams = [];
 
     private $controller;
+    private $router = null;
 
     public function __construct(\Framework\Routers\Router $router){
+        $this->router = $router;
         try{
+            $this->router->parseURI();
             $this->controllerName = $router->getControllerName();
             $this->actionName = $router->getActionName();
             $this->requestParams = $router->getParams();
-        } catch (\Exception $e) {
-            Helpers::redirect();
+        } catch (ApplicationException $e) {
+            $_SESSION["errors"] = $e->getMessage();
+            Helpers::redirect($e->getRedirectUrl());
+        } catch (\Exception $e){
+            Helpers::redirect("error");
         }
     }
 
     public function dispatch(){
-        $this->initController();
+        try {
+            $this->initController();
+            View::$controllerName = $this->controllerName;
+            View::$actionName = $this->actionName;
 
-        View::$controllerName = $this->controllerName;
-        View::$actionName = $this->actionName;
-
-        if (!call_user_func_array(
-            [
-                $this->controller,
-                $this->actionName
-            ],
-            $this->requestParams
-        )) {
-            Helpers::redirect();
+            if (!call_user_func_array(
+                [
+                    $this->controller,
+                    $this->actionName
+                ],
+                $this->requestParams
+            )) {
+                Helpers::redirect();
+            }
+        } catch (ApplicationException $e) {
+            $_SESSION["errors"] = $e->getMessage();
+            Helpers::redirect("error");
+        } catch (\Exception $e) {
+            Helpers::redirect("error");
         }
+
+        unset($_SESSION["errors"]);
+        unset($_SESSION["binding-errors"]);
     }
 
     private function initController(){
@@ -52,14 +70,11 @@ class FrontController
                 . AppConfig::CONTROLLERS_SUFFIX;
         }
 
-        try {
             class_exists($controllerName, false);
             $annotationsParser = new AnnotationsParser($controllerName, $this->actionName);
             $annotationsParser->checkAnnotations();
             $this->controller = new $controllerName();
-        } catch (\Exception $e) {
-            Helpers::redirect();
-        }
+
 
         $this->controller = new $controllerName();
     }

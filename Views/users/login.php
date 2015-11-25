@@ -1,24 +1,34 @@
 <?= $model->error ? $model->error : ''; ?>
 
-<form action="" class="login form-horizontal col-md-6" method="post">
-    <fieldset>
-        <legend>
-            <h2>Login</h2>
-        </legend>
-        <div class="input-group input-group-md col-lg-8 login-field">
-            <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-            <input id="login-username" type="text" class="form-control" name="username" value="" placeholder="username...">
-        </div>
-        <div class="input-group input-group-md col-lg-8 login-field">
-            <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-            <input id="login-password" type="password" class="form-control" name="password" placeholder="password...">
-        </div>
-    </fieldset>
-    <div class="form-group">
-        <div class="col-lg-10 col-lg-offset-2">
-            <input type="submit" value="Login" id="login-btn" class="btn btn-lg btn-primary" />
-            <span>or</span>
-            <a href="<?= \Framework\Helpers\Helpers::url() . 'users/register'?>"><button id="register-btn" type="button" class="btn btn-lg btn-primary">Register</button></a>
+<?php
+if(isset($_SESSION["binding-errors"])){
+    require_once("Views/partials/binding-errors.php");
+}
+?>
+
+<div class="row  pad-top">
+    <div class="col-md-4 col-md-offset-4 col-sm-6 col-sm-offset-3 col-xs-10 col-xs-offset-1">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <strong>   Enter Details To Login </strong>
+            </div>
+            <div class="panel-body">
+                <form role="form" action="" method="post">
+                    <br />
+                    <div class="form-group input-group">
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-tag"  ></i></span>
+                        <input type="text" class="form-control" name="username" placeholder="Your Username " required/>
+                    </div>
+                    <div class="form-group input-group">
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-lock"  ></i></span>
+                        <input type="password" class="form-control"  name="password" placeholder="Your Password" required/>
+                    </div>
+
+                    <input type="submit" value="Login Now" class="btn btn-primary" />
+                    <hr />
+                    Not Registered ? <a href="<?= \Framework\Helpers\Helpers::url() . 'users/register'?>">click here</a>
+                </form>
+            </div>
         </div>
     </div>
-</form>
+</div>
