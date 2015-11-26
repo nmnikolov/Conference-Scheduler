@@ -1,8 +1,4 @@
-<?php if($model->error): ?>
-    <h2><?= $model->error ?></h2>
-<?php elseif($model->success):?>
-    <h2>Successfully changed password</h2>
-<?php endif; ?>
+<?php  /** @var \Framework\Models\ViewModels\UserProfileViewModel $model */ ?>
 
 <?php
     if(isset($_SESSION["binding-errors"])){
@@ -17,7 +13,7 @@
             <div class="form-group">
                 <label for="username" class="col-lg-4 control-label">Username: </label>
                 <div class="col-lg-8">
-                    <input type="text" class="form-control" id="username" name="username" value="<?= htmlspecialchars($model->getUser()->getUsername()); ?>" disabled>
+                    <input type="text" class="form-control" id="username" name="username" value="<?= htmlspecialchars($model->getUsername()); ?>" disabled>
                 </div>
             </div>
             <div class="form-group">

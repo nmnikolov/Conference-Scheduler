@@ -7,6 +7,7 @@ use Framework\Config\DatabaseConfig;
 use Framework\Database\Database;
 use Framework\Helpers\Helpers;
 use Framework\Helpers\Scanner;
+use Framework\HttpContext\HttpContext;
 use Framework\ORM\Manager;
 
 class App
@@ -47,7 +48,8 @@ class App
             exit;
         }
 
-        $this->frontController->dispatch();
         Manager::getInstance()->start();
+        HttpContext::getInstance()->getIdentity()->setCurrentUser();
+        $this->frontController->dispatch();
     }
 }

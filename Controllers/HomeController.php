@@ -3,38 +3,26 @@ declare(strict_types=1);
 
 namespace Framework\Controllers;
 
-use Framework\Identity\UserManager;
-use Framework\ViewModels\TodosInformation;
+use Framework\HttpContext\HttpContext;
 
 class HomeController extends BaseController
 {
     /**
-     * @return bool
+     * @NoAction
+     * @param HttpContext $context
      */
-    public function index() : bool
+    public function __construct(HttpContext $context)
     {
-        $viewModel = new TodosInformation();
+        parent::__construct($context);
+    }
 
-        if (!$this->isLoggedIn()) {
-            $this->render($viewModel);
-            return true;
-        }
+    public function index()
+    {
+        $this->renderDefaultLayout();
 
-        $userRow = UserManager::getInstance()->getInfo($_SESSION['userId']);
-
-        $user = new \Framework\ViewModels\User(
-            $userRow['username'],
-            $userRow['password'],
-            $userRow['id']
-        );
-        $viewModel->setUser($user);
-
-        $this->render($viewModel);
-        return true;
     }
 
     /**
-     * @return bool
      * @param int $a
      * @param string $b
      * @@Authorize
@@ -43,10 +31,7 @@ class HomeController extends BaseController
      * @GET
      */
     public function test1(int $a, string $b){
-        $viewModel = new TodosInformation();
-
-        $this->render($viewModel);
-        return true;
+        $this->renderDefaultLayout();
     }
 
     /**

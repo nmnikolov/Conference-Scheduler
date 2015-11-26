@@ -6,6 +6,7 @@ namespace Framework\HttpContext;
 use Framework\Interfaces\HttpCookieInterface;
 use Framework\Interfaces\HttpRequestInterface;
 use Framework\Interfaces\HttpSessionInterface;
+use Framework\Interfaces\HttpUserInterface;
 
 class HttpContext
 {
@@ -22,20 +23,25 @@ class HttpContext
     private $cookie;
 
     /**
+     *
      * @var HttpSessionInterface
      */
     private $session;
+
+    private $user;
 
     /**
      * HttpContext constructor.
      * @param HttpRequestInterface $request
      * @param HttpCookieInterface $cookie
      * @param HttpSessionInterface $session
+     * @param HttpUserInterface $user
      */
-    private function __construct(HttpRequestInterface $request, HttpCookieInterface $cookie, HttpSessionInterface $session) {
+    private function __construct(HttpRequestInterface $request, HttpCookieInterface $cookie, HttpSessionInterface $session, HttpUserInterface $user) {
         $this->request = $request;
         $this->cookie = $cookie;
         $this->session = $session;
+        $this->user = $user;
     }
 
     /**
@@ -53,10 +59,17 @@ class HttpContext
     }
 
     /**
-     * @return HttpSessionInterface
-     */
+ * @return HttpSessionInterface
+ */
     public function getSession() : HttpSessionInterface {
         return $this->session;
+    }
+
+    /**
+     * @return HttpUserInterface
+     */
+    public function getIdentity() {
+        return $this->user;
     }
 
     /**
@@ -75,13 +88,14 @@ class HttpContext
      * @param HttpRequestInterface $request
      * @param HttpCookieInterface $cookie
      * @param HttpSessionInterface $session
+     * @param HttpUserInterface $user
      * @throws \Exception
      */
-    public static function setInstance(HttpRequestInterface $request, HttpCookieInterface $cookie, HttpSessionInterface $session){
+    public static function setInstance(HttpRequestInterface $request, HttpCookieInterface $cookie, HttpSessionInterface $session, HttpUserInterface $user){
         if (self::$inst !== null) {
             throw new \Exception("There is already instance for HttpContext");
         }
 
-        self::$inst = new HttpContext($request, $cookie, $session);
+        self::$inst = new HttpContext($request, $cookie, $session, $user);
     }
 }

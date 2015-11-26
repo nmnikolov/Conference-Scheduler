@@ -30,8 +30,16 @@ If you want some table to be created upon application start you must create a cl
 - **Other**
 	- **@@Authorize** - checks for logged user. Redirects to users/login if there is no logged user.
 	- **@@Admin** - check if there is logged user and is in admin role (the name of the admin role can be changed from AppConfig class)
-	- **@@NotLogged** - check for logged user. Redirects to default controller and action if there is logged user.	
-	
+	- **@@NotLogged** - check for logged user. Redirects to default controller and action if there is logged user.
+
+** Binding Models Annotations **
+================================
+All binding models annotations are **OPTIONAL**. MinLength and MaxLength doesn't make the field Required!
+- **@Required**
+- **@MinLength(3)**
+- **@MaxLength(30)**
+- **@Display(Full name)** - used when showing binding models errors. Default behaviour is using the field name;
+
 **Custom Annotations**
 ======================
 Users could create custom annotations:

@@ -10,6 +10,7 @@ use Framework\Database\Database;
 use Framework\Exceptions\ApplicationException;
 use Framework\Helpers\Helpers;
 use Framework\Helpers\Scanner;
+use Framework\HttpContext\HttpContext;
 use Framework\ORM\Manager;
 
 class FrontController
@@ -42,15 +43,23 @@ class FrontController
             View::$controllerName = $this->controllerName;
             View::$actionName = $this->actionName;
 
-            if (!call_user_func_array(
+            call_user_func_array(
                 [
                     $this->controller,
                     $this->actionName
                 ],
                 $this->requestParams
-            )) {
-                Helpers::redirect();
-            }
+            );
+
+//            if (!call_user_func_array(
+//                [
+//                    $this->controller,
+//                    $this->actionName
+//                ],
+//                $this->requestParams
+//            )) {
+//                Helpers::redirect();
+//            }
         } catch (ApplicationException $e) {
             $_SESSION["errors"] = $e->getMessage();
             Helpers::redirect("error");
@@ -70,12 +79,9 @@ class FrontController
                 . AppConfig::CONTROLLERS_SUFFIX;
         }
 
-            class_exists($controllerName, false);
-            $annotationsParser = new AnnotationsParser($controllerName, $this->actionName);
-            $annotationsParser->checkAnnotations();
-            $this->controller = new $controllerName();
-
-
-        $this->controller = new $controllerName();
+        class_exists($controllerName, false);
+        $annotationsParser = new AnnotationsParser($controllerName, $this->actionName);
+        $annotationsParser->checkAnnotations();
+        $this->controller = new $controllerName(HttpContext::getInstance());
     }
 }

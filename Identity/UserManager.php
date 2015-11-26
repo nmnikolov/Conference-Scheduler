@@ -8,6 +8,7 @@ use Framework\Exceptions\ApplicationException;
 use Framework\Models\BindingModels\LoginBindingModel;
 use Framework\Models\BindingModels\RegisterBindingModel;
 use Framework\Models\BindingModels\UserEditBindingModel;
+use Framework\Models\ViewModels\UserProfileViewModel;
 
 class UserManager implements UserManagerInterface
 {
@@ -63,11 +64,11 @@ class UserManager implements UserManagerInterface
             ]
         );
 
-        if ($result->rowCount() > 0){
-            return intval($db->lastId());
+        if ($result->rowCount() < 1){
+            throw new ApplicationException('Cannot register user');
         }
 
-        throw new ApplicationException('Cannot register user');
+        return intval($db->lastId());
     }
 
     /**
@@ -86,7 +87,6 @@ class UserManager implements UserManagerInterface
             $userRow = $result->fetch();
 
             if (password_verify($model->getPassword(), $userRow['password'])){
-                $_SESSION['userId'] = $userRow['id'];
                 return $userRow['id'];
             }
         }
@@ -199,7 +199,7 @@ class UserManager implements UserManagerInterface
      * @return mixed
      * @throws \Exception
      */
-    function isInRoleByUsername(string $username, string $roleName) : bool {
+    public function isInRoleByUsername(string $username, string $roleName) : bool {
         $db = Database::getInstance('app');
 
         $result = $db->prepare("SELECT u.id FROM UserRoles AS ur
@@ -217,7 +217,7 @@ class UserManager implements UserManagerInterface
      * @return mixed
      * @throws \Exception
      */
-    function isInRoleById(string $id, string $roleName) : bool {
+    public function isInRoleById(string $id, string $roleName) : bool {
         $db = Database::getInstance('app');
 
         $result = $db->prepare("SELECT u.id FROM UserRoles AS ur
@@ -235,12 +235,32 @@ class UserManager implements UserManagerInterface
      * @return mixed
      * @throws \Exception
      */
-    function addToRole(int $userId, int $roleId) : bool {
+    public function addToRole(int $userId, int $roleId) : bool {
         $db = Database::getInstance('app');
 
         $result = $db->prepare("INSERT INTO UserRoles (user_id, role_id) VALUES (?, ?)");
         $result->execute([$userId, $roleId]);
 
         return $result->rowCount() > 0;
+    }
+
+    /**
+     * @param int $userId
+     * @return UserProfileViewModel
+     * @throws \Exception
+     */
+    public function getUserInfo(int $userId) : UserProfileViewModel {
+        $db = Database::getInstance('app');
+
+        $result = $db->prepare("SELECT id, username, password, fullname FROM users WHERE id = ?");
+        $result->execute([$userId]);
+        $userRow = $result->fetch();
+
+        $user = new UserProfileViewModel();
+        $user->setId($userRow["id"])
+            ->setUsername($userRow["username"])
+            ->setFullName($userRow["fullname"]);
+
+        return $user;
     }
 }

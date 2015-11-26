@@ -1,5 +1,3 @@
-<?= $model->error ? $model->error : ''; ?>
-
 <?php
 if(isset($_SESSION["binding-errors"])){
     require_once("Views/partials/binding-errors.php");

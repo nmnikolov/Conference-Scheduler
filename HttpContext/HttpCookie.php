@@ -36,10 +36,4 @@ class HttpCookie implements HttpCookieInterface
         $cookie->$key = $value;
         $this->cookies[$key] = $cookie;
     }
-
-    public function removeCookie(string $key){
-        if (array_key_exists($key, $this->cookies)) {
-            unset($this->cookies[$key]);
-        }
-    }
 }

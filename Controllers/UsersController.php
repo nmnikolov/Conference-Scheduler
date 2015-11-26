@@ -5,10 +5,12 @@ namespace Framework\Controllers;
 
 use Framework\Config\AppConfig;
 use Framework\Exceptions\ApplicationException;
+use Framework\HttpContext\HttpContext;
 use Framework\Identity\RoleManager;
 use Framework\Identity\UserManager;
 use Framework\Models\BindingModels\LoginBindingModel;
 use Framework\Models\BindingModels\RegisterBindingModel;
+use Framework\Models\BindingModels\UserEditBindingModel;
 use Framework\Models\ViewModels\UserProfileViewModel;
 use Framework\Models\ViewModels\ChangePasswordViewModel;
 use Framework\ViewModels\LoginInformation;
@@ -20,189 +22,120 @@ class UsersController extends  BaseController
 {
     /**
      * @NoAction
+     * @param HttpContext $context
      */
-    public function __construct()
+    public function __construct(HttpContext $context)
     {
+        parent::__construct($context);
     }
 
     /**
      * @NoAction
      */
     private function initLogin(LoginBindingModel $model){
-        UserManager::getInstance()->login($model);
+        $userId = UserManager::getInstance()->login($model);
+        $this->context->getSession()->userId = $userId;
+        $this->context->getIdentity()->setCurrentUser();
         $this->redirect();
     }
 
+    /**
+     * @@NotLogged
+     */
     public function register(){
-        $this->authorize('', false);
-        $viewModel = new RegisterInformation();
-
-        $this->render($viewModel);
-        return true;
+        $this->renderDefaultLayout();
     }
 
     /**
      * @param RegisterBindingModel $model
-     * @return bool
      * @POST
-     * @param int $id
+     * @@NotLogged
      */
     public function registerPst(RegisterBindingModel $model){
-        $this->authorize('', false);
-        $viewModel = new RegisterInformation();
-
         try {
             $userId = UserManager::getInstance()->register($model);
             $roleId = RoleManager::getInstance()->getRoleId(AppConfig::DEFAULT_REGISTRATION_ROLE);
             UserManager::getInstance()->addToRole($userId, $roleId);
-            $this->initLogin($model->getUsername(), $model->getPassword());
+
+            $loginModel = new LoginBindingModel();
+            $loginModel->setUsername($model->getUserName());
+            $loginModel->setPassword($model->getPassword());
+            $this->initLogin($loginModel);
         } catch (ApplicationException $e) {
             $this->redirect("users/register");
         }
-
-        $this->render($viewModel);
-        return true;
     }
 
     /**
-     * @return bool
      * @GET
      * @@NotLogged
      */
     public function login(){
-        $viewModel = new LoginInformation();
-
-        $this->render($viewModel);
-        return true;
+        $this->renderDefaultLayout();
     }
 
     /**
-     * @return bool
+     * @param LoginBindingModel $model
      * @POST
      * @@NotLogged
      */
-    public function loginPst(LoginBindingModel $model) : bool {
-        $viewModel = new LoginInformation();
-
-        try {
-            $this->initLogin($model);
-        } catch (\Exception $e) {
-            $viewModel->error = $e->getMessage();
-        }
-
-        $this->render($viewModel);
-        return true;
+    public function loginPst(LoginBindingModel $model){
+        $this->initLogin($model);
     }
 
     /**
      * @@Authorize
      */
     public function logout(){
-        if ($this->isLoggedIn()) {
-            unset($_SESSION['userId']);
-        }
-
+        $this->context->getIdentity()->logout();
         $this->redirect();
     }
 
     /**
-     * @return bool
      * @@Authorize
      */
     public function profile(){
-        $viewModel = new ProfileInformation();
-        $userRow = UserManager::getInstance()->getInfo($_SESSION['userId']);
-
-        $user = new UserProfileViewModel(
-            $userRow['username'],
-            $userRow['id'],
-            $userRow['fullname'] === null ? "" : $userRow['fullname']
-        );
-        $viewModel->setUser($user);
-
-        $this->render($viewModel);
-        return true;
+        $userProfileViewModel = $this->context->getIdentity()->getCurrentUser();
+        $this->renderDefaultLayout($userProfileViewModel);
     }
 
     /**
      * @param \Framework\Models\BindingModels\UserEditBindingModel $model
-     * @return bool
      * @@Authorize
      * @POST
      */
-    public function profilePst(\Framework\Models\BindingModels\UserEditBindingModel $model){
-        $this->authorize('');
-
-        $viewModel = new ProfileInformation();
-
+    public function profilePst(UserEditBindingModel $model){
         try {
             UserManager::getInstance()->edit($model);
-            $viewModel->success = 'Edit successful';
+            $this->context->getIdentity()->setCurrentUser();
             $this->redirect("users/profile");
-
         } catch (ApplicationException $e) {
-            $userRow = UserManager::getInstance()->getInfo($_SESSION['userId']);
-            $user = new UserProfileViewModel(
-                $userRow['username'],
-                $userRow['password'],
-                $userRow['id']
-            );
-            $viewModel->setUser($user);
-            $viewModel->error = $e->getMessage();
+            $userProfileViewModel = $this->context->getIdentity()->getCurrentUser();
+            $this->renderDefaultLayout($userProfileViewModel);
         }
-
-        $this->render($viewModel);
-        return true;
     }
 
     /**
-     * @return bool
      * @@Authorize
      */
     public function password(){
-        $viewModel = new PasswordInformation();
-        $userRow = UserManager::getInstance()->getInfo($_SESSION['userId']);
-
-        $user = new ChangePasswordViewModel(
-            $userRow['username'],
-            $userRow['password'],
-            $userRow['id']
-        );
-        $viewModel->setUser($user);
-
-        $this->render($viewModel);
-        return true;
+        $userProfileViewModel = $this->context->getIdentity()->getCurrentUser();
+        $this->renderDefaultLayout($userProfileViewModel);
     }
 
     /**
      * @param \Framework\Models\BindingModels\ChangePasswordBindingModel $model
-     * @return bool
      * @@Authorize
      * @POST
      */
     public function passwordPst(\Framework\Models\BindingModels\ChangePasswordBindingModel $model){
-        $this->authorize('');
-
-        $viewModel = new PasswordInformation();
-
         try {
-
             if (UserManager::getInstance()->changePassword($model)){
-                $viewModel->success = 'Edit successful';
                 $this->redirect("users/profile");
             }
         } catch (ApplicationException $e) {
-            $userRow = UserManager::getInstance()->getInfo($_SESSION['userId']);
-            $user = new ChangePasswordViewModel(
-                $userRow['username'],
-                $userRow['password'],
-                $userRow['id']
-            );
-            $viewModel->setUser($user);
-            $viewModel->error = $e->getMessage();
+            $userProfileViewModel = $this->context->getIdentity()->getCurrentUser();
+            $this->renderDefaultLayout($userProfileViewModel);
         }
-
-        $this->render($viewModel);
-        return true;
     }
 }

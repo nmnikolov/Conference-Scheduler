@@ -34,13 +34,4 @@ class HttpSession implements HttpSessionInterface
         $session->$key = $value;
         $this->sessions[$key] = $session;
     }
-
-    /**
-     * @param string $key
-     */
-    public function removeSession(string $key){
-        if (array_key_exists($key, $this->sessions)) {
-            unset($this->sessions[$key]);
-        }
-    }
 }

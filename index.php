@@ -7,7 +7,7 @@ session_start();
 
 require_once 'Autoloader.php';
 \Framework\Autoloader::init();
-\Framework\HttpContext\HttpContext::setInstance(new Framework\HttpContext\HttpRequest(), new Framework\HttpContext\HttpCookie(), new Framework\HttpContext\HttpSession());
+\Framework\HttpContext\HttpContext::setInstance(new Framework\HttpContext\HttpRequest(), new Framework\HttpContext\HttpCookie(), new Framework\HttpContext\HttpSession(), new \Framework\HttpContext\HttpUser());
 
 //\Framework\HttpContext\HttpContext::getInstance()->getCookies()->time->delete();
 //
@@ -23,7 +23,6 @@ require_once 'Autoloader.php';
 //
 //exit;
 
-//
 //\Framework\HttpContext\HttpContext::getInstance()->getSession()->time->delete();
 //
 //var_dump($_SESSION);
@@ -37,6 +36,11 @@ require_once 'Autoloader.php';
 //\Framework\HttpContext\HttpContext::getInstance()->getSession()->time->delete();
 //
 //var_dump($_SESSION);
+//
+//exit;
+
+//var_dump(\Framework\HttpContext\HttpContext::getInstance()->getRequest()->getForm()->username);
+//var_dump(\Framework\HttpContext\HttpContext::getInstance()->getRequest()->test2);
 //
 //exit;
 
