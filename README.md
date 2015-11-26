@@ -1,5 +1,5 @@
-** HttpContext **
-=================
+HttpContext
+===========
 HttpContext is singleton class. You can use it inside Controllers with **$this->context** and with **HttpContext::getInstance()** outside. 
 - **Cookies**
     - **$this->context->getCookies()->test = "2015";** - it will set cookie with name=test and value=2015
@@ -18,8 +18,8 @@ HttpContext is singleton class. You can use it inside Controllers with **$this->
     - **$this->context->getIdentity()->getCurrentUser()** - if there is logged user will return UserProfileViewModel object. Otherwise will return dummy UserProfileViewModel with empty string properties.
     - **$this->context->getIdentity()->setCurrentUser()** - if there is logged user will refresh user data with Db query.
     
-** Identity Code-First **
-===========================
+Identity Code-First
+===================
 If you want some table to be created upon application start you must create a class in Identity/Tables.
 - Possible class annotations:
 	- **@Table table_name** - this annotation is **REQUIRED**!
@@ -33,8 +33,8 @@ If you want some table to be created upon application start you must create a cl
 	- **@Primary** - **OPTIONAL** parameter. Add PRIMARY KEY for the column. **IMPORTANT!!! DO NO USE THIS ANNOTATION FOR PROPERTIES IF THE TABLE ALREADY HAS THE SAME ANNOTATION**
     - **@increment** - **OPTIONAL** parameter. Add AUTO_INCREMENT for the column.
 
-** Built-in Annotations **
-==========================
+Built-in Annotations
+====================
 - **Route**
 	- **@Route(users/login/1)** - no parameters will be passed to the action
 	- **@Route(users/profile/{int}/show)** - parameter of type int will be passed to the action
@@ -52,21 +52,21 @@ If you want some table to be created upon application start you must create a cl
 	- **@@Admin** - check if there is logged user and is in admin role (the name of the admin role can be changed from AppConfig class)
 	- **@@NotLogged** - check for logged user. Redirects to default controller and action if there is logged user.
 
-** Binding Models Annotations **
-================================
+Binding Models Annotations
+==========================
 All binding models annotations are **OPTIONAL**. MinLength and MaxLength doesn't make the field Required!
 - **@Required**
 - **@MinLength(3)**
 - **@MaxLength(30)**
 - **@Display(Full name)** - used when showing binding models errors. Default behaviour is using the field name;
 
-** Strongly Typed Views **
-==========================
+Strongly Typed Views
+====================
 **OPTIONAL** for making the view usable with certain object. Will show error page if class does not exist.
 - **<?php  /\*\* @var \Framework\Models\ViewModels\UserProfileViewModel $model */ ?>** - will make the view usable only with UserProfileViewModel. **IMPORTANT! Add this line at the beginning of your file otherwise it won't work.**
 
-** Custom Annotations **
-=======================
+Custom Annotations
+==================
 Users could create custom annotations:
 - **@@Some** - the framework will search for class SomeAnnotation in Annotations folder. This class must extend AbstractAnnotation class!
          The function dispatch of the Annotation class will be executed before the action execution.
