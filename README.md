@@ -1,3 +1,23 @@
+** HttpContext **
+=================
+HttpContext is singleton class. You can use it inside Controllers with **$this->context** and with **HttpContext::getInstance()** outside. 
+- **Cookies**
+    - **$this->context->getCookies()->test = "2015";** - it will set cookie with name=test and value=2015
+    - **$this->context->getCookies()->test;** - if there is a cookie with name=test it will return its value otherwise empty string
+    - **$this->context->getCookies()->test->delete;** - if the cookie exits it will delete it
+- **Session**
+    - **$this->context->getSession()->test = "2015";** - it will add in the $_SESSION array value with key=test and value=2015
+    - **$this->context->getSession()->test;** - if there is a session value with key=test it will return its value otherwise empty string
+    - **$this->context->getSession()->test->delete;** - will unset Session value with key=test
+- **Request**
+    - **$this->context->getRequest()->userId** - if there is a $_GET value with key=userId it will return its value otherwise empty string
+    - **$this->context->getRequest()->getForm()->username** - if there is a $_POST value with key=username it will return its value otherwise empty string
+- **Identity**
+    - **$this->context->getIdentity()->isLogged()** - will check if there is logged user. Return type: **bool**
+    - **$this->context->getIdentity()->logout()** - will unset Session value with key=userId
+    - **$this->context->getIdentity()->getCurrentUser()** - if there is logged user will return UserProfileViewModel object. Otherwise will return dummy UserProfileViewModel with empty string properties.
+    - **$this->context->getIdentity()->setCurrentUser()** - if there is logged user will refresh user data with Db query.
+    
 ** Identity Code-First **
 ===========================
 If you want some table to be created upon application start you must create a class in Identity/Tables.
@@ -12,7 +32,7 @@ If you want some table to be created upon application start you must create a cl
 	- **@Null** - **OPTIONAL** parameter. Allow null values for the column. Omit this annotation if you want NOT NULL for the column.
 	- **@Primary** - **OPTIONAL** parameter. Add PRIMARY KEY for the column. **IMPORTANT!!! DO NO USE THIS ANNOTATION FOR PROPERTIES IF THE TABLE ALREADY HAS THE SAME ANNOTATION**
     - **@increment** - **OPTIONAL** parameter. Add AUTO_INCREMENT for the column.
-	
+
 ** Built-in Annotations **
 ==========================
 - **Route**
@@ -40,8 +60,13 @@ All binding models annotations are **OPTIONAL**. MinLength and MaxLength doesn't
 - **@MaxLength(30)**
 - **@Display(Full name)** - used when showing binding models errors. Default behaviour is using the field name;
 
-**Custom Annotations**
-======================
+** Strongly Typed Views **
+==========================
+**OPTIONAL** for making the view usable with certain object. Will show error page if class does not exist.
+- **<?php  /\*\* @var \Framework\Models\ViewModels\UserProfileViewModel $model */ ?>** - will make the view usable only with UserProfileViewModel
+
+** Custom Annotations **
+=======================
 Users could create custom annotations:
 - **@@Some** - the framework will search for class SomeAnnotation in Annotations folder. This class must extend AbstractAnnotation class!
          The function dispatch of the Annotation class will be executed before the action execution.
