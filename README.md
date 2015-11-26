@@ -63,7 +63,7 @@ All binding models annotations are **OPTIONAL**. MinLength and MaxLength doesn't
 ** Strongly Typed Views **
 ==========================
 **OPTIONAL** for making the view usable with certain object. Will show error page if class does not exist.
-- **<?php  /\*\* @var \Framework\Models\ViewModels\UserProfileViewModel $model */ ?>** - will make the view usable only with UserProfileViewModel
+- **<?php  /\*\* @var \Framework\Models\ViewModels\UserProfileViewModel $model */ ?>** - will make the view usable only with UserProfileViewModel. **IMPORTANT! Add this line at the beginning of your file otherwise it won't work.**
 
 ** Custom Annotations **
 =======================
