@@ -26,11 +26,17 @@ class Statement
         return $this->stmt->bindParam($parameter, $variable, $dataType, $length, $driverOptions);
     }
 
-    public function rowCount(){
+    /**
+     * @return int
+     */
+    public function rowCount() : int{
         return $this->stmt->rowCount();
     }
 
-    public function execute($params = []){
+    /**
+     * @param array $params
+     */
+    public function execute(array $params = []){
         $this->stmt->execute($params);
     }
 }

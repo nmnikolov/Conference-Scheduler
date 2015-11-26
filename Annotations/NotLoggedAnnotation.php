@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Framework\Annotations;
 
 use Framework\Helpers\Helpers;
+use Framework\HttpContext\HttpContext;
 
 class NotLoggedAnnotation extends AbstractAnnotation
 {
@@ -19,7 +20,9 @@ class NotLoggedAnnotation extends AbstractAnnotation
     }
 
     private function beforeActionExecute(){
-        if (isset($_SESSION['userId'])) {
+        $userId = (string) HttpContext::getInstance()->getSession()->userId;
+
+        if ($userId !== "") {
             Helpers::redirect('');
         }
     }

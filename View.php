@@ -27,6 +27,10 @@ class View
             . self::$actionName
             . AppConfig::VIEW_EXTENSION;
 
+        if (!file_exists($viewPath)) {
+            throw new ApplicationException("The view file does not exist!\nFile: " . $viewPath);
+        }
+
         $model->view = $viewPath;
         self::viewModelValidation($model, $viewPath);
 

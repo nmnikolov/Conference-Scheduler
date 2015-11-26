@@ -10,14 +10,32 @@ use Framework\Helpers\Scanner;
 
 class Router
 {
+    /**
+     * @var string
+     */
     private $controller = null;
+
+    /**
+     * @var string
+     */
     private $action = null;
+
+    /**
+     * @var array
+     */
     private $params = [];
+
+    /**
+     * @var array
+     */
     private $customRoutes = [];
+
+    /**
+     * @var string
+     */
     private $requestStr = null;
 
     public function __construct() {
-//        $this->parseURI();
     }
 
     public function parseURI(){
@@ -44,10 +62,14 @@ class Router
         }
     }
 
+    /**
+     * @return string
+     * @throws ApplicationException
+     */
     public function getControllerName() : string
     {
         if (strpos($this->controller,'.') !== false) {
-            throw new \Exception("Wrong controller name");
+            throw new ApplicationException("Wrong controller name");
         }
 
         if ($this->controller == null   ) {
@@ -159,7 +181,6 @@ class Router
         }
 
         if (count($errors) > 0) {
-//            $_SESSION["binding-errors"] = implode("\n", $errors);
             $_SESSION["binding-errors"] = $errors;
             throw new ApplicationException("", $this->requestStr);
         }
@@ -175,16 +196,17 @@ class Router
         }
     }
 
-    private static function getBindingModelAnnotations($data) : array{
+    /**
+     * @param string $data
+     * @return array
+     */
+    private static function getBindingModelAnnotations(string $data) : array{
         $annotations = [];
         if(preg_match_all('/@(\w+)\s*\(([^\)]*)\)\s*\n/', $data, $matches)){
             for ($i = 0; $i < count($matches[0]); $i++) {
                 $annotations[$matches[1][$i]] =  $matches[2][$i];
             }
         }
-
-//        var_dump($annotations);
-//            exit;
 
         return $annotations;
     }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Framework\Helpers;
 
 use Framework\Config\AppConfig;
+use Framework\Exceptions\ApplicationException;
 
 class Scanner
 {
@@ -115,6 +116,9 @@ class Scanner
         Helpers::writeInFile("Config/actions.json",json_encode($this->actions));
     }
 
+    /**
+     * @return array
+     */
     private function getControllersNames() : array {
         $controllersNames = array();
         $path = "Controllers";
@@ -122,7 +126,6 @@ class Scanner
 
         foreach($files as $file)
         {
-//            $fullFileName = "Framework\\" . $path . "\\" . substr($file, 0, strlen($file) - 4);
             $fullFileName = substr($file, 0, strlen($file) - 4);
             $controllersNames[] = $fullFileName;
         }
@@ -130,17 +133,28 @@ class Scanner
         return $controllersNames;
     }
 
+    /**
+     * @return array
+     */
     public function getCustomRoutes() : array{
         return $this->customRoutes;
     }
 
+    /**
+     * @return array
+     */
     public function getActions() : array{
         return $this->actions;
     }
 
+    /**
+     * @param string $actionName
+     * @return array
+     * @throws ApplicationException
+     */
     public function getAction(string $actionName) : array {
-        if (!array_key_exists($actionName, $this->actions))   {
-            throw new \Exception("There is no such action!");
+        if (!array_key_exists($actionName, $this->actions)){
+            throw new ApplicationException("There is no such path!\nPath: " . $actionName);
         }
 
         return $this->actions[$actionName];

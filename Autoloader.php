@@ -17,7 +17,6 @@ class Autoloader
 
             if (!file_exists(substr($path . '.php', 1))) {
                 Helpers::redirect("error");
-                exit;
             }
 
             require_once $path . '.php';

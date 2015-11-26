@@ -3,8 +3,6 @@ declare(strict_types=1);
 
 namespace Framework\Exceptions;
 
-use Framework\Config\AppConfig;
-
 class ApplicationException extends \Exception
 {
     private $redirectUrl;

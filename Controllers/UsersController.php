@@ -80,7 +80,11 @@ class UsersController extends  BaseController
      * @@NotLogged
      */
     public function loginPst(LoginBindingModel $model){
-        $this->initLogin($model);
+        try{
+            $this->initLogin($model);
+        } catch (ApplicationException $e) {
+            $this->redirect("users/login");
+        }
     }
 
     /**

@@ -7,6 +7,9 @@ use Framework\Interfaces\HttpRequestInterface;
 
 class HttpRequest implements HttpRequestInterface
 {
+    /**
+     * @var FormPart
+     */
     private $form = null;
 
     /**

@@ -16,7 +16,7 @@ class HttpSession implements HttpSessionInterface
      * @param string $key
      * @return SessionPart
      */
-    public function __get(string $key) {
+    public function __get(string $key) : SessionPart {
         if (array_key_exists($key, $this->sessions)) {
             return $this->sessions[$key];
         }

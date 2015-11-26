@@ -20,14 +20,14 @@ class App
     /**
      * @param \Framework\FrontController $frontController
      */
-    public function __construct($frontController){
+    public function __construct(FrontController $frontController){
         $this->setFrontController($frontController);
     }
 
     /**
      * @param \Framework\FrontController $frontController
      */
-    public function setFrontController($frontController) {
+    public function setFrontController(FrontController $frontController) {
         $this->frontController = $frontController;
     }
 

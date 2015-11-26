@@ -10,7 +10,7 @@ class ChangePasswordViewModel
     private $pass;
 
     /**
-     * @return mixed
+     * @return bool
      */
     public function isLogged() : bool
     {
@@ -18,12 +18,12 @@ class ChangePasswordViewModel
     }
 
     /**
-     * User constructor.
-     * @param $id
-     * @param $username
-     * @param $pass
+     * ChangePasswordViewModel constructor.
+     * @param string $username
+     * @param string $pass
+     * @param string $id
      */
-    public function __construct($username = null, $pass = null, $id = null)
+    public function __construct(string $username = null, string $pass = null, string $id = null)
     {
         $this->setId($id)
             ->setUsername($username)
@@ -31,7 +31,7 @@ class ChangePasswordViewModel
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getId() : string
     {
@@ -43,17 +43,17 @@ class ChangePasswordViewModel
     }
 
     /**
-     * @param mixed $id
+     * @param string $id
      * @return ChangePasswordViewModel
      */
-    public function setId($id) : ChangePasswordViewModel
+    public function setId(string $id) : ChangePasswordViewModel
     {
         $this->id = $id;
         return $this;
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getUsername() : string
     {
@@ -65,17 +65,17 @@ class ChangePasswordViewModel
     }
 
     /**
-     * @param mixed $username
+     * @param string $username
      * @return ChangePasswordViewModel
      */
-    public function setUsername($username) : ChangePasswordViewModel
+    public function setUsername(string $username) : ChangePasswordViewModel
     {
         $this->username = $username;
         return $this;
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getPass() : string
     {
@@ -88,10 +88,10 @@ class ChangePasswordViewModel
     }
 
     /**
-     * @param mixed $pass
+     * @param string $pass
      * @return ChangePasswordViewModel
      */
-    public function setPass($pass) : ChangePasswordViewModel
+    public function setPass(string $pass) : ChangePasswordViewModel
     {
         $this->pass = $pass;
         return $this;

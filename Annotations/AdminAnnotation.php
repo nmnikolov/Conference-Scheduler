@@ -5,6 +5,7 @@ namespace Framework\Annotations;
 
 use Framework\Config\AppConfig;
 use Framework\Helpers\Helpers;
+use Framework\HttpContext\HttpContext;
 use Framework\Identity\UserManager;
 
 class AdminAnnotation extends AbstractAnnotation
@@ -21,7 +22,9 @@ class AdminAnnotation extends AbstractAnnotation
     }
 
     private function beforeActionExecute(){
-        if (!isset($_SESSION['userId']) || !UserManager::getInstance()->isInRoleById($_SESSION['userId'], AppConfig::DEFAULT_ADMIN_ROLE)) {
+        $userId = (string) HttpContext::getInstance()->getSession()->userId;
+
+        if ($userId === "" || !UserManager::getInstance()->isInRoleById($userId, AppConfig::DEFAULT_ADMIN_ROLE)) {
             Helpers::redirect("");
         }
     }

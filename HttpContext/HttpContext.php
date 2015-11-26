@@ -23,11 +23,13 @@ class HttpContext
     private $cookie;
 
     /**
-     *
      * @var HttpSessionInterface
      */
     private $session;
 
+    /**
+     * @var HttpUserInterface
+     */
     private $user;
 
     /**
@@ -68,7 +70,7 @@ class HttpContext
     /**
      * @return HttpUserInterface
      */
-    public function getIdentity() {
+    public function getIdentity() : HttpUserInterface {
         return $this->user;
     }
 

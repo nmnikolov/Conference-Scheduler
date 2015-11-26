@@ -56,29 +56,9 @@ abstract class BaseController
 
     /**
      * @NoAction
+     * @param string $path
      */
-    public function isLoggedIn(){
-        return isset($_SESSION['userId']);
-    }
-
-    /**
-     * @NoAction
-     */
-    public function authorize($redirectionPath, $authorizeLogged = true) {
-
-        if (!$this->isLoggedIn() && $authorizeLogged === true) {
-            $this->redirect($redirectionPath);
-        }
-
-        if ($this->isLoggedIn() && $authorizeLogged === false) {
-            $this->redirect($redirectionPath);
-        }
-    }
-
-    /**
-     * @NoAction
-     */
-    public function redirect($path = AppConfig::DEFAULT_REDIRECTION) {
+    public function redirect(string $path = AppConfig::DEFAULT_REDIRECTION) {
         header("Location: " . Helpers::url() . $path);
         exit;
     }

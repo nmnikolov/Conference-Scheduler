@@ -19,7 +19,6 @@ class HomeController extends BaseController
     public function index()
     {
         $this->renderDefaultLayout();
-
     }
 
     /**
@@ -35,13 +34,12 @@ class HomeController extends BaseController
     }
 
     /**
-     * @return bool
      * @@Authorize
      * @Route(test/test)
      * @POST
      * @GET
      */
     public function test2(){
-
+        $this->renderDefaultLayout();
     }
 }

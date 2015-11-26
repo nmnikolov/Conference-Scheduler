@@ -6,26 +6,27 @@
     }
 ?>
 
-<form action="" class="register form-horizontal col-md-6" method="post">
-    <fieldset>
-        <legend>Profile</legend>
-        <div class="col-lg-9 form-info">
-            <div class="form-group">
-                <label for="username" class="col-lg-4 control-label">Username: </label>
-                <div class="col-lg-8">
-                    <input type="text" class="form-control" id="username" name="username" value="<?= htmlspecialchars($model->getUsername()); ?>" disabled>
-                </div>
+<div class="row  pad-top">
+    <div class="col-md-4 col-md-offset-4 col-sm-6 col-sm-offset-3 col-xs-10 col-xs-offset-1">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <strong>   Update uour profile </strong>
             </div>
-            <div class="form-group">
-                <label for="fullName" class="col-lg-4 control-label">FullName: </label>
-                <div class="col-lg-8">
-                    <input type="text" class="form-control" id="fullName" name="fullName" value="<?= htmlspecialchars($model->getFullName()); ?>" required>
-                </div>
-            </div>
-        <div class="form-group col-lg-12" id="profileButtons">
-            <div class="col-lg-10 col-lg-offset-2">
-                <input id="save-btn" type="submit" name="edit" value="Save" class="btn btn-lg btn-primary">
+            <div class="panel-body">
+                <form role="form" action="" method="post">
+                    <br />
+                    <div class="form-group input-group">
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-tag"></i></span>
+                        <input type="text" class="form-control" id="username" name="username" value="<?= htmlspecialchars($model->getUsername()); ?>" disabled>
+                    </div>
+                    <div class="form-group input-group">
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-tag"></i></span>
+                        <input type="text" class="form-control" id="fullName" name="fullName" value="<?= htmlspecialchars($model->getFullName()); ?>" required>
+                    </div>
+
+                    <input id="save-btn" type="submit" name="edit" value="Update profile" class="btn btn-primary">
+                </form>
             </div>
         </div>
-    </fieldset>
-</form>
+    </div>
+</div>

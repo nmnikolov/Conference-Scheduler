@@ -5,9 +5,24 @@ namespace Framework\Database\Drivers;
 
 abstract class DriverAbstract
 {
+    /**
+     * @var string
+     */
     protected $user;
+
+    /**
+     * @var
+     */
     protected $pass;
+
+    /**
+     * @var
+     */
     protected $dbName;
+
+    /**
+     * @var
+     */
     protected $host;
 
     public function __construct(string $user, string $pass, string $dbName, string $host = null){

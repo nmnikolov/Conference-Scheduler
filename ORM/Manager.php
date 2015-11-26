@@ -75,6 +75,10 @@ class Manager
         }
     }
 
+    /**
+     * @param string $class
+     * @return array
+     */
     private function parseClassDoc(string $class) : array {
         $classDoc = array();
         $rc = new \ReflectionClass($class);
@@ -93,10 +97,13 @@ class Manager
         return $classDoc;
     }
 
-    private function createDatabase(){
-
-    }
-
+    /**
+     * @param string $tableName
+     * @param array $columns
+     * @param array $classDoc
+     * @return bool
+     * @throws \Exception
+     */
     private function createTable(string $tableName, array $columns, array $classDoc) : bool {
         try {
             $db = Database::getInstance('app');
@@ -136,14 +143,20 @@ class Manager
             var_dump($sql);
             $db->query($sql);
         } catch(\PDOException $e) {
-            echo $e->getMessage();//Remove or change message in production code
+            return false;
+        } catch (\Exception $e) {
             return false;
         }
 
         return true;
     }
 
-    public function tableExists($table) : bool {
+    /**
+     * @param string $table
+     * @return bool
+     * @throws \Exception
+     */
+    public function tableExists(string $table) : bool {
         $db = Database::getInstance('app');
 
         $result = $db->prepare("SHOW TABLES LIKE ?");
@@ -152,6 +165,9 @@ class Manager
         return $result->rowCount() > 0;
     }
 
+    /**
+     * @return array
+     */
     public function getIdentityClasses() : array {
         $identityClasses = array();
         $path = "Identity\\Tables";
@@ -166,7 +182,11 @@ class Manager
         return $identityClasses;
     }
 
-    public function getTableColumns($class) : array {
+    /**
+     * @param string $class
+     * @return array
+     */
+    public function getTableColumns(string $class) : array {
         $properties = array();
         try {
             $rc = new \ReflectionClass($class);
@@ -204,7 +224,12 @@ class Manager
         return $properties;
     }
 
-    public function getTableName($class) : string {
+    /**
+     * @param string $class
+     * @return string
+     * @throws \Exception
+     */
+    public function getTableName(string $class) : string {
         $rc = new \ReflectionClass($class);
         if ($rc->getDocComment() && preg_match('/@Table\s*([^\s\n*]+)/', $rc->getDocComment(), $matches)) {
             $tableName = $matches[1];

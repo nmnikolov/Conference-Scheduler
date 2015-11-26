@@ -7,7 +7,10 @@ use Framework\Config\AppConfig;
 
 class Helpers
 {
-    public static function url(){
+    /**
+     * @return string
+     */
+    public static function url() : string {
         $self = $_SERVER['PHP_SELF'];
         $index = basename($self);
         $directories = str_replace($index, '', $self);
@@ -15,32 +18,58 @@ class Helpers
         return $directories;
     }
 
-    public static function redirect($path = AppConfig::DEFAULT_REDIRECTION) {
+    /**
+     * @param string $path
+     */
+    public static function redirect(string $path = AppConfig::DEFAULT_REDIRECTION) {
         header("Location: " . self::url() . $path);
         exit;
     }
 
-    public static function startsWith($haystack, $needle) {
+    /**
+     * @param string $haystack
+     * @param string $needle
+     * @return bool
+     */
+    public static function startsWith(string $haystack, string $needle) : bool {
         // search backwards starting from haystack length characters from the end
         return $needle === "" || strrpos($haystack, $needle, -strlen($haystack)) !== FALSE;
     }
-    public static function endsWith($haystack, $needle) {
+
+    /**
+     * @param string $haystack
+     * @param string $needle
+     * @return bool
+     */
+    public static function endsWith(string $haystack, string $needle) : bool {
         // search forward starting from end minus needle length characters
         return $needle === "" || (($temp = strlen($haystack) - strlen($needle)) >= 0 && strpos($haystack, $needle, $temp) !== FALSE);
     }
 
-    public static function isInteger($input){
+    /**
+     * @param $input
+     * @return bool
+     */
+    public static function isInteger($input) : bool{
         return(ctype_digit(strval($input)));
     }
 
+    /**
+     * @param string $filePath
+     * @param string $content
+     */
     public static function writeInFile(string $filePath,string $content){
         $fh = fopen($filePath, 'w+');
         fwrite($fh, $content);
         fclose($fh);
     }
 
-//    public static function needScan(string $filePath, string $folderPath) : bool{
-    public static function needScan(string $filePath, string $folderPath){
+    /**
+     * @param string $filePath
+     * @param string $folderPath
+     * @return bool
+     */
+    public static function needScan(string $filePath, string $folderPath) : bool{
         if (file_exists($filePath)) {
             $fh = fopen($filePath, 'r');
             $time = fgets($fh);
@@ -56,8 +85,11 @@ class Helpers
         return true;
     }
 
-//    public static function isValidTimeStamp(string $timestamp) : bool {
-    public static function isValidTimeStamp(string $timestamp){
+    /**
+     * @param string $timestamp
+     * @return bool
+     */
+    public static function isValidTimeStamp(string $timestamp) : bool {
         return ((string) (int) $timestamp === $timestamp)
         && ($timestamp <= PHP_INT_MAX)
         && ($timestamp >= ~PHP_INT_MAX);

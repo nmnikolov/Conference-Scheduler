@@ -18,10 +18,10 @@ class UserProfileViewModel
     }
 
     /**
-     * User constructor.
-     * @param $id
-     * @param $username
-     * @param $pass
+     * UserProfileViewModel constructor.
+     * @param string $username
+     * @param string $id
+     * @param string $fullName
      */
     public function __construct(string $username = "", string $id = "", string $fullName = "")
     {
@@ -31,7 +31,7 @@ class UserProfileViewModel
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getId() : string
     {
@@ -43,17 +43,17 @@ class UserProfileViewModel
     }
 
     /**
-     * @param mixed $id
+     * @param string $id
      * @return UserProfileViewModel
      */
-    public function setId($id) : UserProfileViewModel
+    public function setId(string $id) : UserProfileViewModel
     {
         $this->id = $id;
         return $this;
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getUsername() : string
     {
@@ -65,10 +65,10 @@ class UserProfileViewModel
     }
 
     /**
-     * @param mixed $username
+     * @param string $username
      * @return UserProfileViewModel
      */
-    public function setUsername($username) : UserProfileViewModel
+    public function setUsername(string $username) : UserProfileViewModel
     {
         $this->username = $username;
         return $this;

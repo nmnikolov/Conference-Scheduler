@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Framework\Annotations;
 
 use Framework\Config\AppConfig;
+use Framework\Exceptions\ApplicationException;
 use Framework\Helpers\Scanner;
 
 class AnnotationsParser
@@ -29,6 +30,10 @@ class AnnotationsParser
         $this->actionName = $action;
     }
 
+    /**
+     * @throws ApplicationException
+     * @throws \Exception
+     */
     public function checkAnnotations()
     {
         $controllerName = explode(DIRECTORY_SEPARATOR, $this->controllerName);
@@ -36,7 +41,7 @@ class AnnotationsParser
         $action = Scanner::getInstance()->getAction($actionName);
 
         if (!in_array($_SERVER['REQUEST_METHOD'], $action["methods"])) {
-            throw new \Exception($_SERVER['REQUEST_METHOD'] . " is not allowed for the action!");
+            throw new ApplicationException($_SERVER['REQUEST_METHOD'] . " is not allowed for the action!");
         }
 
         foreach ($action["annotations"] as $annotation => $val) {

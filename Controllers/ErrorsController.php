@@ -24,6 +24,5 @@ class ErrorsController extends BaseController
         $viewModel = new ErrorPageViewModel($message);
 
         $this->renderDefaultLayout($viewModel);
-        return true;
     }
 }

@@ -15,17 +15,30 @@ class Database
      */
     private $db = null;
 
-    private function __construct($dbInstance){
+    /**
+     * Database constructor.
+     * @param string $dbInstance
+     */
+    private function __construct(\PDO $dbInstance){
         $this->db = $dbInstance;
     }
 
+    /**
+     * @param string $instanceName
+     * @param string $driver
+     * @param string $user
+     * @param string $pass
+     * @param string $dbName
+     * @param string|null $host
+     * @throws \Exception
+     */
     public static function setInstance(
-        $instanceName,
-        $driver,
-        $user,
-        $pass,
-        $dbName,
-        $host = null
+        string $instanceName,
+        string $driver,
+        string $user,
+        string $pass,
+        string$dbName,
+        string $host = ""
     ){
         $driver = DriverFactory::Create($driver, $user, $pass, $dbName, $host);
 
@@ -67,17 +80,25 @@ class Database
      * @param array $driverOptions
      * @return Statement
      */
-    public function prepare($statement, array $driverOptions = []){
+    public function prepare(string $statement, array $driverOptions = []) : Statement{
         $statement = $this->db->prepare($statement, $driverOptions);
 
         return new Statement($statement);
     }
 
-    public function query($query){
+    /**
+     * @param string $query
+     * @return \PDOStatement
+     */
+    public function query(string $query) : \PDOStatement{
         return $this->db->query($query);
     }
 
-    public function lastId($name = null){
+    /**
+     * @param string $name
+     * @return string
+     */
+    public function lastId(string $name = "") : string {
         return $this->db->lastInsertId($name);
     }
 }

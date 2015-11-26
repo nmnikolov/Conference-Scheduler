@@ -5,13 +5,9 @@ namespace Framework;
 
 use Framework\Annotations\AnnotationsParser;
 use Framework\Config\AppConfig;
-use Framework\Config\DatabaseConfig;
-use Framework\Database\Database;
 use Framework\Exceptions\ApplicationException;
 use Framework\Helpers\Helpers;
-use Framework\Helpers\Scanner;
 use Framework\HttpContext\HttpContext;
-use Framework\ORM\Manager;
 
 class FrontController
 {
@@ -50,16 +46,6 @@ class FrontController
                 ],
                 $this->requestParams
             );
-
-//            if (!call_user_func_array(
-//                [
-//                    $this->controller,
-//                    $this->actionName
-//                ],
-//                $this->requestParams
-//            )) {
-//                Helpers::redirect();
-//            }
         } catch (ApplicationException $e) {
             $_SESSION["errors"] = $e->getMessage();
             Helpers::redirect("error");
