@@ -14,6 +14,7 @@ HttpContext is singleton class. You can use it inside Controllers with **$this->
     - **$this->context->getRequest()->getForm()->username** - if there is a $_POST value with key=username it will return its value otherwise empty string
 - **Identity**
     - **$this->context->getIdentity()->isLogged()** - will check if there is logged user. Return type: **bool**
+    - **$this->context->getIdentity()->isAdmin()** - will check if there is logged user and if that user is in Admin role. Return type: **bool**
     - **$this->context->getIdentity()->logout()** - will unset Session value with key=userId
     - **$this->context->getIdentity()->getCurrentUser()** - if there is logged user will return UserProfileViewModel object. Otherwise will return dummy UserProfileViewModel with empty string properties.
     - **$this->context->getIdentity()->setCurrentUser()** - if there is logged user will refresh user data with Db query.

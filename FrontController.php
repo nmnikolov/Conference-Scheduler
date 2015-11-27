@@ -54,7 +54,7 @@ class FrontController
         }
 
         unset($_SESSION["errors"]);
-        unset($_SESSION["binding-errors"]);
+        $_SESSION["binding-errors"] = [];
     }
 
     private function initController(){

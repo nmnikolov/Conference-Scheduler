@@ -28,11 +28,23 @@
 
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="navbar-collapse collapse" id="bs-example-navbar-collapse-9" aria-expanded="false">
-
                     <ul class="nav navbar-nav">
                         <li><a href="<?= \Framework\Helpers\Helpers::url() . 'home'?>"><span class="glyphicon glyphicon-home"></span></a></li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
+                        <?php if(\Framework\HttpContext\HttpContext::getInstance()->getIdentity()->isAdmin()): ?>
+                            <li role="presentation" class="dropdown" id="admin-menu">
+                                <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                                    Admin <span class="caret"></span>
+                                </a>
+                                <ul class="dropdown-menu" id="categories-menu">
+                                    <li><a href="<?= \Framework\Helpers\Helpers::url() . 'admin/users'?>" class="hvr-underline-reveal">Users</a></li>
+                                    <li><a href="<?= \Framework\Helpers\Helpers::url() . 'admin/conferences'?>" class="hvr-underline-reveal">Conferences</a></li>
+                                    <li><a href="<?= \Framework\Helpers\Helpers::url() . 'admin/venues'?>" class="hvr-underline-reveal">Venues</a></li>
+                                    <li><a href="<?= \Framework\Helpers\Helpers::url() . 'admin/halls'?>" class="hvr-underline-reveal">Halls</a></li>
+                                </ul>
+                            </li>
+                        <?php endif; ?>
                         <?php if(\Framework\HttpContext\HttpContext::getInstance()->getIdentity()->isLogged()): ?>
                             <li><a href="<?= \Framework\Helpers\Helpers::url() . 'users/profile'?>" class="hvr-underline-reveal"><span class="glyphicon glyphicon-user"></span></a></li>
                             <li><a href="<?= \Framework\Helpers\Helpers::url() . 'users/password'?>"><span class="glyphicon glyphicon-lock"></span></a></li>

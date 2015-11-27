@@ -1,9 +1,9 @@
 <?php  /** @var \Framework\Models\ViewModels\UserProfileViewModel $model */ ?>
 
 <?php
-    if(isset($_SESSION["binding-errors"])){
-        require_once("Views/partials/binding-errors.php");
-    }
+if(isset($_SESSION["binding-errors"]) && count($_SESSION["binding-errors"]) > 0){
+    require_once("Views/partials/binding-errors.php");
+}
 ?>
 
 <div class="row  pad-top">

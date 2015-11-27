@@ -5,7 +5,7 @@ CREATE DATABASE IF NOT EXISTS `Conference_Scheduler`
 CHARACTER SET utf8 
 COLLATE utf8_general_ci;
 
-SHOW databases like "Conference_Scheduler";
+SHOW databases like 'Conference_Scheduler';
 
 USE `Conference_Scheduler`;
 
@@ -42,21 +42,3 @@ delete from users;
 delete from roles;
 
 show tables;
-
-select 
-	u.id
-from userRoles as ur
-join users as u
-	on ur.user_id = u.id
-join roles as r
-	on ur.role_id = r.id
-where r.rolename = 'admin' AND u.id = 2;
-
-select id from users
-where username = 'admin';
-    
-select id from roles
-where rolename = 'User';
-
-show tables like 'users';
-

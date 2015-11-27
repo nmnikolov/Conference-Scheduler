@@ -205,7 +205,7 @@ class UserManager implements UserManagerInterface
         $result = $db->prepare("SELECT u.id FROM user_roles AS ur
           JOIN users AS u ON ur.user_id = u.id
           JOIN roles AS r ON ur.role_id = r.id
-          WHERE u.username = ? AND r.rolename = ?");
+          WHERE u.username = ? AND r.name = ?");
         $result->execute([$username, $roleName]);
 
         return $result->rowCount() > 0;
@@ -223,7 +223,7 @@ class UserManager implements UserManagerInterface
         $result = $db->prepare("SELECT u.id FROM user_roles AS ur
           JOIN users AS u ON ur.user_id = u.id
           JOIN roles AS r ON ur.role_id = r.id
-          WHERE u.id = ? AND r.rolename = ?");
+          WHERE u.id = ? AND r.name = ?");
         $result->execute([$id, $roleName]);
 
         return $result->rowCount() > 0;

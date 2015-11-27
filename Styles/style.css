@@ -47,6 +47,12 @@ header .navbar-inverse a {
     height: 53px;
 }
 
+header #admin-menu ul a{
+    color: #000000 !important;
+    font-size: 1em;
+    height: 33px;
+}
+
 main, footer{
     max-width: 1170px !important;
     margin: 0 auto !important;

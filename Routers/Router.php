@@ -7,6 +7,7 @@ use Framework\Config\AppConfig;
 use Framework\Exceptions\ApplicationException;
 use Framework\Helpers\Helpers;
 use Framework\Helpers\Scanner;
+use Framework\HttpContext\HttpContext;
 
 class Router
 {
@@ -181,8 +182,14 @@ class Router
         }
 
         if (count($errors) > 0) {
+            $redirect = $this->requestStr;
+
+            if (HttpContext::getInstance()->getRequest()->getForm()->redirect !== "") {
+                $redirect = HttpContext::getInstance()->getRequest()->getForm()->redirect;
+            }
+
             $_SESSION["binding-errors"] = $errors;
-            throw new ApplicationException("", $this->requestStr);
+            throw new ApplicationException("", $redirect);
         }
     }
 
@@ -207,7 +214,6 @@ class Router
                 $annotations[$matches[1][$i]] =  $matches[2][$i];
             }
         }
-
         return $annotations;
     }
 }

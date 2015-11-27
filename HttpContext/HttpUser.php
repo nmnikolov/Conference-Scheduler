@@ -2,6 +2,7 @@
 
 namespace Framework\HttpContext;
 
+use Framework\Config\AppConfig;
 use Framework\Identity\UserManager;
 use Framework\Interfaces\HttpUserInterface;
 use Framework\Models\ViewModels\UserProfileViewModel;
@@ -24,6 +25,18 @@ class HttpUser implements HttpUserInterface
      */
     public function isLogged() : bool {
         return (string) HttpContext::getInstance()->getSession()->userId !== "";
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAdmin() : bool {
+        if ($this->isLogged()) {
+            $userId =(string) HttpContext::getInstance()->getSession()->userId;
+            return UserManager::getInstance()->isInRoleById($userId, AppConfig::DEFAULT_ADMIN_ROLE);
+        }
+
+        return false;
     }
 
     public function logout(){
