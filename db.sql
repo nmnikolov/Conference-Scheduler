@@ -12,53 +12,34 @@ USE `Conference_Scheduler`;
 CREATE TABLE `users` (
     id INT AUTO_INCREMENT PRIMARY KEY,
     username NVARCHAR(255) NOT NULL UNIQUE,
-    password NVARCHAR(255) NOT NULL);
-    
-CREATE TABLE `todos` (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT NOT NULL,
-    todo_item TEXT NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users(id));
-    
+    password NVARCHAR(255) NOT NULL);    
     
 CREATE TABLE `roles` (
 	id INT AUTO_INCREMENT PRIMARY KEY,
     rolename NVARCHAR(255) NOT NULL UNIQUE);
     
-CREATE TABLE `UserRoles` (
+CREATE TABLE `user_roles` (
     user_id INT NOT NULL,
     role_id int NOT NULL,
     PRIMARY KEY (user_id, role_id),
     FOREIGN KEY (user_id) REFERENCES users(id),
-    FOREIGN KEY (role_id) REFERENCES roles(id));
-    
-
-insert into `roles`(name) values
-	('admin'),
-	('user');
-    
-insert into `users`(username, password) Values
-	('admin', 'admin'),
-    ('user', 'user');
-    
-insert into `UserRoles` (user_id, role_id) Values 
-	(1, 1),
-    (2, 2);
+    FOREIGN KEY (role_id) REFERENCES roles(id));    
     
 select * from users;
 select * from roles;
-select * from userroles;
+select * from user_roles;
 
 USE `Conference_Scheduler`;
 describe users;
 describe roles;
-describe userroles;
+describe user_roles;
 
-create table userroles(id INT AUTO_INCREMENT PRIMARY KEY);
-
-drop table userRoles;
+drop table user_roles;
 drop table users;
 drop table roles;
+
+delete from users;
+delete from roles;
 
 show tables;
 
@@ -78,3 +59,4 @@ select id from roles
 where rolename = 'User';
 
 show tables like 'users';
+

@@ -6,7 +6,7 @@ namespace Framework\Identity\Tables;
 /**
  * Class UserRoles
  * @package Framework\Identity\Tables
- * @Table UserRoles
+ * @Table user_roles
  * @Primary user_id
  * @Primary role_id
  * @Foreign (user_id) References users(id)

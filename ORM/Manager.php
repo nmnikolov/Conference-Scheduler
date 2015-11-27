@@ -3,8 +3,10 @@ declare(strict_types=1);
 
 namespace Framework\ORM;
 
+use Framework\Config\AppConfig;
 use Framework\Database\Database;
 use Framework\Helpers\Helpers;
+use Framework\Identity\RoleManager;
 
 class Manager
 {
@@ -33,18 +35,30 @@ class Manager
 
     public function start(){
         if (Helpers::needScan("Config/migrations.txt", "Identity/Tables/.")) {
-            $tablesClasses = $this->getIdentityClasses();
-            $this->processTableClasses($tablesClasses);
-            Helpers::writeInFile("Config/migrations.txt", strval(time()));
-//            $this->updateMigrationsFile();
+            $this->updateDatabase();
+        }
+
+        $this->seedRoles();
+    }
+
+    private function seedRoles(){
+        if (!$this->tableExists("roles")) {
+            $this->updateDatabase();
+        }
+
+        if (!RoleManager::getInstance()->exists(AppConfig::DEFAULT_ADMIN_ROLE)) {
+            RoleManager::getInstance()->createRole(AppConfig::DEFAULT_ADMIN_ROLE);
+        }
+
+        if (!RoleManager::getInstance()->exists(AppConfig::DEFAULT_REGISTRATION_ROLE)) {
+            RoleManager::getInstance()->createRole(AppConfig::DEFAULT_REGISTRATION_ROLE);
         }
     }
 
-    private function updateMigrationsFile(){
-        $file = "Config/migrations.txt";
-        $fh = fopen($file, 'w+');
-        fwrite($fh, time());
-        fclose($fh);
+    private function updateDatabase(){
+        $tablesClasses = $this->getIdentityClasses();
+        $this->processTableClasses($tablesClasses);
+        Helpers::writeInFile("Config/migrations.txt", strval(time()));
     }
 
     private function processTableClasses(array $tableClasses){
@@ -54,7 +68,7 @@ class Manager
             $columns = $this->getTableColumns($tableClass);
 
             if (!$this->tableExists($tableName)) {
-                var_dump($this->createTable($tableName, $columns, $classDoc));
+                $this->createTable($tableName, $columns, $classDoc);
             }
 //            else {
 //                $db = Database::getInstance('app');
@@ -140,7 +154,6 @@ class Manager
             }
 
             $sql .= ");";
-            var_dump($sql);
             $db->query($sql);
         } catch(\PDOException $e) {
             return false;
@@ -156,7 +169,7 @@ class Manager
      * @return bool
      * @throws \Exception
      */
-    public function tableExists(string $table) : bool {
+    private function tableExists(string $table) : bool {
         $db = Database::getInstance('app');
 
         $result = $db->prepare("SHOW TABLES LIKE ?");
@@ -168,7 +181,7 @@ class Manager
     /**
      * @return array
      */
-    public function getIdentityClasses() : array {
+    private function getIdentityClasses() : array {
         $identityClasses = array();
         $path = "Identity\\Tables";
         $files = array_diff(scandir($path), array('..', '.'));
@@ -186,7 +199,7 @@ class Manager
      * @param string $class
      * @return array
      */
-    public function getTableColumns(string $class) : array {
+    private function getTableColumns(string $class) : array {
         $properties = array();
         try {
             $rc = new \ReflectionClass($class);
@@ -229,7 +242,7 @@ class Manager
      * @return string
      * @throws \Exception
      */
-    public function getTableName(string $class) : string {
+    private function getTableName(string $class) : string {
         $rc = new \ReflectionClass($class);
         if ($rc->getDocComment() && preg_match('/@Table\s*([^\s\n*]+)/', $rc->getDocComment(), $matches)) {
             $tableName = $matches[1];

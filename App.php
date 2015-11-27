@@ -5,8 +5,6 @@ namespace Framework;
 
 use Framework\Config\DatabaseConfig;
 use Framework\Database\Database;
-use Framework\Helpers\Helpers;
-use Framework\Helpers\Scanner;
 use Framework\HttpContext\HttpContext;
 use Framework\ORM\Manager;
 

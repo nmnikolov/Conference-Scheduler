@@ -25,7 +25,7 @@ If you want some table to be created upon application start you must create a cl
 	- **@Table table_name** - this annotation is **REQUIRED**!
     - **@Primary table_column_name** - OPTIONAL parameter for creating the column PRIMARY KEY
     - **@Foreign (column_name) References foreign_table_name(foreign_column_name)** - **OPTIONAL** parameter - will add   FOREIGN KEY($column_name) References $foreign_table_name($foreign_column_name) to the sql query
-- Possible properties annotations:
+- Possible field annotations:
     - **@Field column_name** - **REQUIRED**! The name of the column in the table.
 	- **@Type column_type** - **REQUIRED**! The type of the column.
 	- **@Length	column_length** - **REQUIRED**! The length of the column. You have to type it even for Integer numbers. Default Int value in MySql is 11.

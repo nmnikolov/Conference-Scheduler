@@ -202,7 +202,7 @@ class UserManager implements UserManagerInterface
     public function isInRoleByUsername(string $username, string $roleName) : bool {
         $db = Database::getInstance('app');
 
-        $result = $db->prepare("SELECT u.id FROM UserRoles AS ur
+        $result = $db->prepare("SELECT u.id FROM user_roles AS ur
           JOIN users AS u ON ur.user_id = u.id
           JOIN roles AS r ON ur.role_id = r.id
           WHERE u.username = ? AND r.rolename = ?");
@@ -220,7 +220,7 @@ class UserManager implements UserManagerInterface
     public function isInRoleById(string $id, string $roleName) : bool {
         $db = Database::getInstance('app');
 
-        $result = $db->prepare("SELECT u.id FROM UserRoles AS ur
+        $result = $db->prepare("SELECT u.id FROM user_roles AS ur
           JOIN users AS u ON ur.user_id = u.id
           JOIN roles AS r ON ur.role_id = r.id
           WHERE u.id = ? AND r.rolename = ?");
@@ -238,7 +238,7 @@ class UserManager implements UserManagerInterface
     public function addToRole(int $userId, int $roleId) : bool {
         $db = Database::getInstance('app');
 
-        $result = $db->prepare("INSERT INTO UserRoles (user_id, role_id) VALUES (?, ?)");
+        $result = $db->prepare("INSERT INTO user_roles (user_id, role_id) VALUES (?, ?)");
         $result->execute([$userId, $roleId]);
 
         return $result->rowCount() > 0;

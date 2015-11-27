@@ -38,7 +38,7 @@ class RoleManager implements RoleManagerInterface
             throw new \Exception("Role with this name already exists!");
         }
 
-        $result = $db->prepare("INSERT INTO Roles (rolename) VALUES (?)");
+        $result = $db->prepare("INSERT INTO roles (name) VALUES (?)");
         $result->execute([$roleName]);
 
         return $result->rowCount() > 0;
@@ -47,7 +47,7 @@ class RoleManager implements RoleManagerInterface
     public function exists(string $roleName) : bool {
         $db = Database::getInstance('app');
 
-        $result = $db->prepare("SELECT id FROM roles WHERE rolename = ?");
+        $result = $db->prepare("SELECT id FROM roles WHERE name = ?");
         $result->execute([$roleName]);
 
         return $result->rowCount() > 0;
