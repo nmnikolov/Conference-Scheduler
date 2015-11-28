@@ -102,13 +102,19 @@ class ConferencesRepository
           c.description,
           c.start_time as startTime,
           c.end_time as endTime,
+          c.is_active as isActive,
+          u.id as ownerId,
+          u.username as ownerUsername,
+          u.fullname as ownerFullname,
           v.id as venueId,
           v.description as venueDescription,
           v.address as venueAddress,
           v.name as venueName
         FROM conferences AS c
-        JOIN venues AS v
-          ON v.id = c.venue_id
+        JOIN users AS u
+          ON u.id = c.owner_id
+        LEFT JOIN venues AS v
+            ON v.id = c.venue_id
         WHERE c.id = ?";
 
         $result = $this->db->prepare($query);

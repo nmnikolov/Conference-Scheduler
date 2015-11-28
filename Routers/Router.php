@@ -56,6 +56,7 @@ class Router
 
         if (!$this->searchCustomRoutes($requestParams)) {
             $this->actionNameAdjustment();
+
         }
 
         if ($_SERVER['REQUEST_METHOD'] === "POST") {
@@ -92,6 +93,10 @@ class Router
     public function getParams() : array
     {
         return $this->params;
+    }
+
+    private function searchAction(array $actions){
+
     }
 
     private function searchCustomRoutes(array $requestParams) : bool{
@@ -215,5 +220,19 @@ class Router
             }
         }
         return $annotations;
+    }
+
+//    private function remove_empty($array) {
+//        return array_filter($array, '_remove_empty_internal');
+//    }
+//
+//    private function _remove_empty_internal($value) {
+//        return !empty($value) || $value === 0;
+//    }
+
+    private function remove_empty($array) {
+        return array_filter($array, function($value){
+            return !empty($value) || $value === 0;
+        });
     }
 }

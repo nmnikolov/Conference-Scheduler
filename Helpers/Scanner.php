@@ -105,7 +105,6 @@ class Scanner
 
                 if ($methodDoc && preg_match_all('/@param\s+([^\s]+)\s+\$([^\s]+)/', $method->getDocComment(), $parameterType)){
                     for ($i = 0; $i < count($parameterType[0]); $i++) {
-
                         $this->actions[$action]["params"][$parameterType[2][$i]] = $parameterType[1][$i];
                     }
                 }

@@ -8,7 +8,12 @@ use Framework\HttpContext\HttpContext;
 use Framework\Models\BindingModels\CreateConferenceBindingModel;
 use Framework\Models\Conference;
 use Framework\Models\ViewModels\CreateConferenceViewModel;
+use Framework\Models\ViewModels\EditConferenceViewModel;
+use Framework\Models\ViewModels\EditConferenceViewModelViewModel;
+use Framework\Models\ViewModels\UserProfileViewModel;
+use Framework\Models\ViewModels\VenueViewModel;
 use Framework\Repositories\ConferencesRepository;
+use Framework\Repositories\VenuesRepository;
 
 class ConferencesController extends BaseController
 {
@@ -25,6 +30,29 @@ class ConferencesController extends BaseController
      * @@Authorize
      */
     public function create(){
+        $this->renderDefaultLayout();
+    }
+
+    public function ongoing(){
+
+    }
+
+    public function future(){
+
+    }
+
+    public function past(){
+
+    }
+
+    /**
+     * @param int $id
+     * @throws ApplicationException
+     */
+    public function details(int $id){
+        $conference = ConferencesRepository::getInstance()->getById($id);
+        var_dump($conference);
+        exit;
         $this->renderDefaultLayout();
     }
 
@@ -63,7 +91,49 @@ class ConferencesController extends BaseController
      * @@Authorize
      */
     public function edit(int $id){
+        $conference = ConferencesRepository::getInstance()->getById($id);
+        if ($conference["ownerId"] !== $this->context->getIdentity()->getCurrentUser()->getId()) {
+            throw new ApplicationException("Your are now allowed to edit this conference!");
+        }
 
+        $venue = new VenueViewModel();
+        if ($conference["venueId"]) {
+            $venue = new VenueViewModel(
+                $conference["venueId"],
+                $conference["venueName"],
+                $conference["venueDescription"],
+                $conference["venueAddress"]
+            );
+        }
+
+        $activeVenues = VenuesRepository::getInstance()->getActiveVenues();
+
+        $owner = new UserProfileViewModel(
+            $conference["ownerUsername"],
+            $conference["ownerId"],
+            $conference["ownerFullname"]
+        );
+
+        $viewModel = new EditConferenceViewModel(
+            intval($conference["id"]),
+            $conference["title"],
+            $conference["description"],
+            $conference["startTime"],
+            $conference["endTime"],
+            $conference["isActive"] ? TRUE : FALSE,
+            $owner,
+            $venue,
+            $activeVenues,
+            []
+        );
+
+        $this->renderDefaultLayout($viewModel);
+    }
+
+    /**
+     * @@Authorize
+     */
+    public function my(){
         $this->renderDefaultLayout();
     }
 }

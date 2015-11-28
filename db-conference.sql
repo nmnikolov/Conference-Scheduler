@@ -38,7 +38,7 @@ CREATE TABLE `conferences` (
     description TEXT NOT NULL,
     start_time DATETIME NOT NULL,
     end_time DATETIME NOT NULL,
-    is_active BOOL NOT NULL DEFAULT TRUE,
+    is_active BOOL NOT NULL DEFAULT FALSE,
     owner_id INT NOT NULL,
     venue_id INT,
     FOREIGN KEY (owner_id) REFERENCES users(id),
@@ -77,3 +77,59 @@ CREATE TABLE `lectures_participants` (
     PRIMARY KEY (lecture_id, participant_id),
     FOREIGN KEY (lecture_id) REFERENCES users(id),
     FOREIGN KEY (participant_id) REFERENCES users(id));
+
+
+SELECT
+    c.id,
+    c.title,
+    c.description,
+    c.start_time,
+    c.end_time,
+    c.is_active,
+    v.id AS venueId,
+    v.name as venueName
+FROM conferences AS c
+    LEFT JOIN venues AS v
+        on v.id = c.venue_id
+ORDER BY c.title;
+
+SELECT
+    r.id AS roleId,
+    r.name AS roleName
+FROM users AS u
+    JOIN user_roles AS ur
+        ON ur.user_id = u.id
+    JOIN roles AS r
+        ON r.id = ur.role_id
+WHERE u.Id = 1
+LIMIT 1;
+
+
+SELECT
+    c.id,
+    c.title,
+    c.description,
+    c.start_time,
+    c.end_time,
+    c.is_active,
+    v.id AS venueId,
+    v.name as venueName
+FROM conferences AS c
+    LEFT JOIN venues AS v
+        on v.id = c.venue_id
+WHERE c.id = 10;
+
+SELECT
+    c.id,
+    c.title,
+    c.description,
+    c.start_time as startTime,
+    c.end_time as endTime,
+    v.id as venueId,
+    v.description as venueDescription,
+    v.address as venueAddress,
+    v.name as venueName
+FROM conferences AS c
+    LEFT JOIN venues AS v
+        ON v.id = c.venue_id
+WHERE c.id = 10

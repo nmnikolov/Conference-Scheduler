@@ -97,6 +97,23 @@ class VenuesRepository
     }
 
     /**
+     * @return array
+     */
+    public function getActiveVenues(){
+        $query = "SELECT
+            v.id,
+            v.name
+        FROM venues AS v
+        WHERE v.isActive = TRUE
+        ORDER BY v.name";
+
+        $result = $this->db->prepare($query);
+        $result->execute([]);
+
+        return $result->fetchAll();
+    }
+
+    /**
      * @param int $venueId
      */
     public function deactivateVenue(int $venueId) : bool{

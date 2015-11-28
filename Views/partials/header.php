@@ -33,8 +33,20 @@
             <div class="navbar-collapse collapse" id="bs-example-navbar-collapse-9" aria-expanded="false">
                     <ul class="nav navbar-nav">
                         <li><a href="<?= \Framework\Helpers\Helpers::url() . 'home'?>"><span class="glyphicon glyphicon-home"></span></a></li>
+                        <li><a href="<?= \Framework\Helpers\Helpers::url() . 'conferences/ongoing'?>" class="hvr-underline-reveal">Ongoing</a></li>
+                        <li><a href="<?= \Framework\Helpers\Helpers::url() . 'conferences/past'?>" class="hvr-underline-reveal">Past</a></li>
+                        <li><a href="<?= \Framework\Helpers\Helpers::url() . 'conferences/future'?>" class="hvr-underline-reveal">Future</a></li>
                         <?php if(\Framework\HttpContext\HttpContext::getInstance()->getIdentity()->isLogged()): ?>
-                            <li><a href="<?= \Framework\Helpers\Helpers::url() . 'conferences/create'?>" class="hvr-underline-reveal"><span class="glyphicon glyphicon-plus"></span></a></li>
+                            <li role="presentation" class="dropdown" id="admin-menu">
+                                <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                                    Conferences menu<span class="caret"></span>
+                                </a>
+                                <ul class="dropdown-menu" id="categories-menu">
+                                    <li><a href="<?= \Framework\Helpers\Helpers::url() . 'conferences/create'?>" class="hvr-underline-reveal">Add conference</a></li>
+                                    <li><a href="<?= \Framework\Helpers\Helpers::url() . 'conferences/my'?>" class="hvr-underline-reveal">My conferences</a></li>
+                                    <li><a href="<?= \Framework\Helpers\Helpers::url() . 'conferences/participating'?>" class="hvr-underline-reveal">Participating conferences</a></li>
+                                </ul>
+                            </li>
                         <?php endif; ?>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
