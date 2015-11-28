@@ -5,6 +5,7 @@ namespace Framework\Repositories;
 
 use Framework\Database\Database;
 use Framework\Exceptions\ApplicationException;
+use Framework\HttpContext\HttpContext;
 use Framework\Models\Conference;
 use Framework\Models\Hall;
 
@@ -44,15 +45,22 @@ class UsersRepository
      * @return array
      */
     public function getAllUsers(){
+        $userId = HttpContext::getInstance()->getIdentity()->getCurrentUser()->getId();
         $query = "SELECT
             u.id,
             u.username,
-            u.fullname
+            u.fullname,
+            r.name AS roleName
         FROM users AS u
+        JOIN user_roles AS ur
+          ON ur.user_id = u.id
+        JOIN roles AS r
+          ON r.id = ur.role_id
+        WHERE u.id != ?
         ORDER BY u.username";
 
         $result = $this->db->prepare($query);
-        $result->execute([]);
+        $result->execute([$userId]);
 
         return $result->fetchAll();
     }

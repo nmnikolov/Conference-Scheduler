@@ -4,10 +4,14 @@ namespace Framework\Controllers;
 
 use Framework\Exceptions\ApplicationException;
 use Framework\HttpContext\HttpContext;
+use Framework\Identity\RoleManager;
+use Framework\Identity\UserManager;
+use Framework\Models\BindingModels\ChangeRoleBindingModel;
 use Framework\Models\BindingModels\CreateHallBindingModel;
 use Framework\Models\BindingModels\CreateVenueBindingModel;
 use Framework\Models\Hall;
 use Framework\Models\Venue;
+use Framework\Models\ViewModels\AdminChangeRoleViewModel;
 use Framework\Models\ViewModels\AdminConferencesViewModel;
 use Framework\Models\ViewModels\AdminCreateHallViewModel;
 use Framework\Models\ViewModels\AdminHallsViewModel;
@@ -43,6 +47,51 @@ class AdminController extends BaseController
         $users = UsersRepository::getInstance()->getAllUsers();
         $viewModel = new AdminUsersViewModel($users);
         $this->renderDefaultLayout($viewModel);
+    }
+
+    /**
+     * @@Admin
+     * @Route(admin/users/{int}/role/edit)
+     * @param int $id
+     * @throws ApplicationException
+     */
+    public function changeRole(int $id){
+        if (intval($this->context->getIdentity()->getCurrentUser()->getId()) === $id) {
+            throw new ApplicationException("Cannot change your own role!");
+        }
+
+        $user = UserManager::getInstance()->getUserInfo($id);
+        $role = UserManager::getInstance()->getUserRole($id);
+        $roles = RoleManager::getInstance()->getAllRoles();
+
+        $viewModel = new AdminChangeRoleViewModel($user, $role, $roles);
+
+        $this->renderDefaultLayout($viewModel);
+    }
+
+    /**
+     * @@Admin
+     * @Route(admin/users/{int}/role/editPst)
+     * @POST
+     * @param int $id
+     * @param ChangeRoleBindingModel $model
+     * @throws ApplicationException
+     */
+    public function changeRolePst(int $id, ChangeRoleBindingModel $model){
+        if (intval($this->context->getIdentity()->getCurrentUser()->getId()) === $id) {
+            throw new ApplicationException("Cannot change your own role!");
+        }
+
+        try{
+            if (!UserManager::getInstance()->removeUserRoles($id)) {
+                throw new ApplicationException("Couldn't change user role.");
+            }
+            UserManager::getInstance()->addToRole($id, $model->getNewRole());
+            $this->redirect("admin/users");
+        } catch (ApplicationException $e){
+            $_SESSION["binding-errors"] = [$e->getMessage()];
+            $this->redirect("admin/users/". $id . "/role/edit");
+        }
     }
 
     /**

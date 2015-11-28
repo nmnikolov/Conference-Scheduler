@@ -65,4 +65,17 @@ class RoleManager implements RoleManagerInterface
 
         return  intval($result->fetch()["id"]);
     }
+
+    /**
+     * @return array
+     * @throws \Exception
+     */
+    public function getAllRoles() : array {
+        $db = Database::getInstance('app');
+
+        $result = $db->prepare("SELECT id, name FROM roles");
+        $result->execute([]);
+
+        return  $result->fetchAll();
+    }
 }

@@ -22,4 +22,9 @@ interface RoleManagerInterface
      * @return int
      */
     function getRoleId(string $roleName) : int;
+
+    /**
+     * @return array
+     */
+    function getAllRoles() : array;
 }

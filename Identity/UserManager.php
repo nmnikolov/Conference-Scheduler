@@ -8,6 +8,7 @@ use Framework\Exceptions\ApplicationException;
 use Framework\Models\BindingModels\LoginBindingModel;
 use Framework\Models\BindingModels\RegisterBindingModel;
 use Framework\Models\BindingModels\UserEditBindingModel;
+use Framework\Models\ViewModels\RoleViewModel;
 use Framework\Models\ViewModels\UserProfileViewModel;
 
 class UserManager implements UserManagerInterface
@@ -232,7 +233,7 @@ class UserManager implements UserManagerInterface
     /**
      * @param $userId
      * @param $roleId
-     * @return mixed
+     * @return bool
      * @throws \Exception
      */
     public function addToRole(int $userId, int $roleId) : bool {
@@ -242,6 +243,47 @@ class UserManager implements UserManagerInterface
         $result->execute([$userId, $roleId]);
 
         return $result->rowCount() > 0;
+    }
+
+    /**
+     * @param int $userId
+     * @return bool
+     * @throws \Exception
+     */
+    public function removeUserRoles(int $userId) : bool {
+        $db = Database::getInstance('app');
+
+        $result = $db->prepare("DELETE FROM user_roles WHERE user_id = ?");
+        $result->execute([$userId]);
+
+        return $result->rowCount() > 0;
+    }
+
+    /**
+     * @param int $userId
+     * @return RoleViewModel
+     * @throws \Exception
+     */
+    public function getUserRole(int $userId) : RoleViewModel {
+        $db = Database::getInstance('app');
+
+        $result = $db->prepare("SELECT
+          r.id AS roleId,
+          r.name AS roleName
+        FROM users AS u
+        JOIN user_roles AS ur
+          ON ur.user_id = u.id
+        JOIN roles AS r
+          ON r.id = ur.role_id
+        WHERE u.Id = ?
+        LIMIT 1");
+        $result->execute([$userId]);
+
+        $userRow = $result->fetch();
+
+        $role = new RoleViewModel(intval($userRow["roleId"]), $userRow["roleName"]);
+
+        return $role;
     }
 
     /**

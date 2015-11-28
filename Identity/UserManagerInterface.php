@@ -7,6 +7,7 @@ use Framework\Models\BindingModels\ChangePasswordBindingModel;
 use Framework\Models\BindingModels\LoginBindingModel;
 use Framework\Models\BindingModels\RegisterBindingModel;
 use Framework\Models\BindingModels\UserEditBindingModel;
+use Framework\Models\ViewModels\RoleViewModel;
 use Framework\Models\ViewModels\UserProfileViewModel;
 
 interface UserManagerInterface
@@ -23,4 +24,6 @@ interface UserManagerInterface
     function isInRoleById(string $id, string $roleName) : bool;
     function addToRole(int $userId, int $roleId) : bool;
     function getUserInfo(int $userId) : UserProfileViewModel;
+    function getUserRole(int $userId) : RoleViewModel;
+    function removeUserRoles(int $userId) : bool;
 }

@@ -25,10 +25,7 @@ class ConferencesController extends BaseController
      * @@Authorize
      */
     public function create(){
-        $message = isset($_SESSION["errors"]) ? $_SESSION["errors"] : "";
-        $viewModel = new CreateConferenceViewModel($message);
-
-        $this->renderDefaultLayout($viewModel);
+        $this->renderDefaultLayout();
     }
 
     /**

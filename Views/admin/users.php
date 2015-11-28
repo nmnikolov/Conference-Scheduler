@@ -14,6 +14,10 @@
         <th>
             FullName
         </th>
+        <th>
+            Role
+        </th>
+        <th></th>
     </tr>
     </thead>
     <tbody>
@@ -29,6 +33,12 @@
             </td>
             <td>
                 <?= $user["fullname"] ?>
+            </td>
+            <td>
+                <?= $user["roleName"] ?>
+            </td>
+            <td>
+                <a href="<?= \Framework\Helpers\Helpers::url() . "admin/users/" . $user["id"] . "/role/edit"?>">Change role</a>
             </td>
         </tr>
     <?php endforeach; ?>
