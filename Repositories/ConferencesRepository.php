@@ -41,10 +41,15 @@ class ConferencesRepository
 
     /**
      * @param Conference $conference
+     * @return int
      * @throws ApplicationException
      */
-    public function create(Conference $conference){
-        $query = "INSERT INTO conferences (title, description, start_time, end_time, owner_id, venue_id) VALUES (?, ?, ?, ?, ?, ?)";
+    public function create(Conference $conference) : int {
+        if ($this->conferenceTitleExists($conference->getTitle())) {
+            throw new ApplicationException("Conference with this title already exists!");
+        }
+
+        $query = "INSERT INTO conferences (title, description, start_time, end_time, owner_id) VALUES (?, ?, ?, ?, ?)";
 
         $result = $this->db->prepare($query);
         $result->execute([
@@ -52,13 +57,38 @@ class ConferencesRepository
             $conference->getDescription(),
             $conference->getStartTime(),
             $conference->getEndTime(),
-            $conference->getOwnerId(),
-            $conference->getVenueId()
+            $conference->getOwnerId()
         ]);
 
         if($result->rowCount() < 1 ){
             throw new ApplicationException("Couldn't create conference.");
         }
+
+        return intval($this->db->lastId());
+    }
+
+    /**
+     * @return array
+     */
+    public function getAllConferences(){
+        $query = "SELECT
+          c.id,
+          c.title,
+          c.description,
+          c.start_time AS startTime,
+          c.end_time AS endTime,
+          c.is_active AS isActive,
+          v.id AS venueId,
+          v.name as venueName
+        FROM conferences AS c
+        LEFT JOIN venues AS v
+          on v.id = c.venue_id
+        ORDER BY c.title";
+
+        $result = $this->db->prepare($query);
+        $result->execute([]);
+
+        return $result->fetchAll();
     }
 
     /**
@@ -89,5 +119,17 @@ class ConferencesRepository
         }
 
         return $result->fetch();
+    }
+
+    /**
+     * @param string $conferenceTitle
+     * @return bool
+     */
+    private function conferenceTitleExists(string $conferenceTitle) : bool {
+        $query = "SELECT id FROM conferences WHERE title = ?";
+        $result = $this->db->prepare($query);
+        $result->execute([$conferenceTitle]);
+
+        return $result->rowCount() > 0;
     }
 }

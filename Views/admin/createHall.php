@@ -38,7 +38,7 @@ if(isset($_SESSION["binding-errors"]) && count($_SESSION["binding-errors"]) > 0)
     <div class="form-group  col-md-7">
         <div class="col-md-offset-2 col-md-10">
             <input type="submit" class="btn btn-primary" value="Add">
-            <a class="btn btn-default" href="<?= \Framework\Helpers\Helpers::url() . "admin/halls" ?>">Calcel</a>
+            <a class="btn btn-default" href="<?= \Framework\Helpers\Helpers::url() . "admin/halls" ?>">Cancel</a>
         </div>
     </div>
 </form>

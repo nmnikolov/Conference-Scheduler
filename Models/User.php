@@ -2,13 +2,13 @@
 
 namespace Framework\Models;
 
-class Hall
+class User
 {
     private $username;
     private $fullname;
 
     /**
-     * Hall constructor.
+     * User constructor.
      * @param string $username
      * @param string $fullname
      */

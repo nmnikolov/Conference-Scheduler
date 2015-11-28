@@ -3,6 +3,7 @@
 
 namespace Framework\Helpers;
 
+use DateTime;
 use Framework\Config\AppConfig;
 
 class Helpers
@@ -93,5 +94,16 @@ class Helpers
         return ((string) (int) $timestamp === $timestamp)
         && ($timestamp <= PHP_INT_MAX)
         && ($timestamp >= ~PHP_INT_MAX);
+    }
+
+    /**
+     * @param string $date
+     * @param string $format
+     * @return bool
+     */
+    public static function validateDate(string $date, string $format = 'Y-m-d H:i') : bool
+    {
+        $d = DateTime::createFromFormat($format, $date);
+        return $d && $d->format($format) == $date;
     }
 }

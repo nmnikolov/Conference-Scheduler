@@ -19,27 +19,27 @@ class Conference
      * @param int $venueId
      * @param string $title
      * @param string $description
-     * @param DateTime $startTime
-     * @param DateTime $endTime
+     * @param string $startTime
+     * @param string $endTime
      */
-    public function __construct(int $ownerId, int $venueId, string $title, string $description, DateTime $startTime, DateTime $endTime) {
-        $this->ownerId = $ownerId;
-        $this->venueId = $venueId;
+    public function __construct(string $title, string $description, string $startTime, string $endTime, int $ownerId, int $venueId = 0) {
         $this->title = $title;
         $this->description = $description;
         $this->startTime = $startTime;
         $this->endTime = $endTime;
+        $this->ownerId = $ownerId;
+        $this->venueId = $venueId;
     }
 
     /**
-     * @return int|int
+     * @return int
      */
     public function getOwnerId() : int {
         return $this->ownerId;
     }
 
     /**
-     * @return int|int
+     * @return int
      */
     public function getVenueId() : int {
         return $this->venueId;
@@ -60,16 +60,16 @@ class Conference
     }
 
     /**
-     * @return DateTime
+     * @return string
      */
-    public function getStartTime() : DateTime {
+    public function getStartTime() : string {
         return $this->startTime;
     }
 
     /**
-     * @return DateTime
+     * @return string
      */
-    public function getEndTime() : DateTime{
+    public function getEndTime() : string{
         return $this->endTime;
     }
 }

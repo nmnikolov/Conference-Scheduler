@@ -29,6 +29,7 @@ CREATE TABLE `halls` (
     name NVARCHAR(255) NOT NULL UNIQUE,
     capacity INT NOT NULL,
     venue_id INT NOT NULL,
+    isActive BOOLEAN NOT NULL DEFAULT TRUE,
     FOREIGN KEY (venue_id) REFERENCES venues(id));
 
 CREATE TABLE `conferences` (
@@ -39,7 +40,7 @@ CREATE TABLE `conferences` (
     end_time DATETIME NOT NULL,
     is_active BOOL NOT NULL DEFAULT TRUE,
     owner_id INT NOT NULL,
-    venue_id INT NOT NULL,
+    venue_id INT,
     FOREIGN KEY (owner_id) REFERENCES users(id),
     FOREIGN KEY (venue_id) REFERENCES venues(id));
 
@@ -76,6 +77,3 @@ CREATE TABLE `lectures_participants` (
     PRIMARY KEY (lecture_id, participant_id),
     FOREIGN KEY (lecture_id) REFERENCES users(id),
     FOREIGN KEY (participant_id) REFERENCES users(id));
-
-
-SELECT * FROM venues;

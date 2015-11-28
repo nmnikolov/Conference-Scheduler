@@ -6,8 +6,11 @@
     <title>Conference Scheduler</title>
     <link rel="stylesheet" href="<?=\Framework\Helpers\Helpers::url()?>Styles/style.css" type="text/css">
     <link rel="stylesheet" href="<?=\Framework\Helpers\Helpers::url()?>Styles/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="<?=\Framework\Helpers\Helpers::url()?>Styles/bootstrap-datetimepicker.min.css" type="text/css">
     <script src="<?=\Framework\Helpers\Helpers::url()?>Libs/jquery-2.1.4.min.js" type="application/javascript"></script>
     <script src="<?=\Framework\Helpers\Helpers::url()?>Libs/bootstrap.min.js"></script>
+    <script src="<?=\Framework\Helpers\Helpers::url()?>Libs/moment.min.js"></script>
+    <script src="<?=\Framework\Helpers\Helpers::url()?>Libs/bootstrap-datetimepicker.min.js"></script>
 </head>
 <body>
 <header>
@@ -30,6 +33,9 @@
             <div class="navbar-collapse collapse" id="bs-example-navbar-collapse-9" aria-expanded="false">
                     <ul class="nav navbar-nav">
                         <li><a href="<?= \Framework\Helpers\Helpers::url() . 'home'?>"><span class="glyphicon glyphicon-home"></span></a></li>
+                        <?php if(\Framework\HttpContext\HttpContext::getInstance()->getIdentity()->isLogged()): ?>
+                            <li><a href="<?= \Framework\Helpers\Helpers::url() . 'conferences/create'?>" class="hvr-underline-reveal"><span class="glyphicon glyphicon-plus"></span></a></li>
+                        <?php endif; ?>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
                         <?php if(\Framework\HttpContext\HttpContext::getInstance()->getIdentity()->isAdmin()): ?>

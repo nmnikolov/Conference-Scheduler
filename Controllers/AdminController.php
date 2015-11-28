@@ -8,10 +8,12 @@ use Framework\Models\BindingModels\CreateHallBindingModel;
 use Framework\Models\BindingModels\CreateVenueBindingModel;
 use Framework\Models\Hall;
 use Framework\Models\Venue;
+use Framework\Models\ViewModels\AdminConferencesViewModel;
 use Framework\Models\ViewModels\AdminCreateHallViewModel;
 use Framework\Models\ViewModels\AdminHallsViewModel;
 use Framework\Models\ViewModels\AdminUsersViewModel;
 use Framework\Models\ViewModels\AdminVenuesViewModel;
+use Framework\Repositories\ConferencesRepository;
 use Framework\Repositories\HallsRepository;
 use Framework\Repositories\UsersRepository;
 use Framework\Repositories\VenuesRepository;
@@ -40,6 +42,15 @@ class AdminController extends BaseController
     public function users(){
         $users = UsersRepository::getInstance()->getAllUsers();
         $viewModel = new AdminUsersViewModel($users);
+        $this->renderDefaultLayout($viewModel);
+    }
+
+    /**
+     * @@Admin
+     */
+    public function conferences(){
+        $conferences = ConferencesRepository::getInstance()->getAllConferences();
+        $viewModel = new AdminConferencesViewModel($conferences);
         $this->renderDefaultLayout($viewModel);
     }
 
