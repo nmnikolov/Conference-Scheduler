@@ -60,7 +60,7 @@ if(isset($_SESSION["binding-errors"]) && count($_SESSION["binding-errors"]) > 0)
     <div class="form-group  col-md-7">
         <div class="col-md-offset-2 col-md-10">
             <?php if($model->getIsDismissed()): ?>
-                <a class="btn btn-danger" href="<?= \Framework\Helpers\Helpers::url() . "conferences/details/" . $model->getId(); ?> ?>">Back to conference</a>
+                <a class="btn btn-danger" href="<?= \Framework\Helpers\Helpers::url() . "conferences/details/" . $model->getId(); ?>">Back to conference</a>
             <?php else: ?>
                 <input type="submit" class="btn btn-primary" value="Save">
                 <?php if(!$model->getIsActive()): ?>

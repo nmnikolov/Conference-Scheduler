@@ -22,4 +22,9 @@
     <?php else: ?>
         <p><span class="inactive-span">Inactive</span></p>
     <?php endif; ?>
+
+    <?php if($model->getIsConferenceOwner() && !$model->getIsDismissed() && $model->getEndTime() >= Date('Y-m-d H:i:s')): ?>
+        <a href="<?= \Framework\Helpers\Helpers::url() . "conferences/edit/" . $model->getId() ?>" class="btn btn-primary" role="button">Edit</a>
+        <a href="<?= \Framework\Helpers\Helpers::url() . "conferences/dismiss/" . $model->getId() ?>" class="btn btn-danger" role="button">Dismiss</a>
+    <?php endif; ?>
 </div>

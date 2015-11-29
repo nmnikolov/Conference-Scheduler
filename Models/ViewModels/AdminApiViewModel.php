@@ -7,20 +7,20 @@ class AdminApiViewModel
     /**
      * @var array
      */
-    private $actions = [];
+    private $routes = [];
 
     /**
-     * HallViewModel constructor.
-     * @param array $halls
+     * AdminApiViewModel constructor.
+     * @param array $routes
      */
-    public function __construct(array $actions) {
-        $this->halls = $actions;
+    public function __construct(array $routes) {
+        $this->routes = $routes;
     }
 
     /**
      * @return array
      */
-    public function getHalls() : array {
-        return $this->halls;
+    public function getRoutes() : array {
+        return $this->routes;
     }
 }

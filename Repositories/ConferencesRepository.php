@@ -96,7 +96,7 @@ class ConferencesRepository
     /**
      * @return array
      */
-    public function getAllConferences(){
+    public function getAllConferences() : array{
         $query = "SELECT
           c.id,
           c.title,
@@ -206,7 +206,7 @@ class ConferencesRepository
      * @param int $userId
      * @return array
      */
-    public function getUserConferencesPreview(int $userId){
+    public function getUserConferencesPreview(int $userId) : array{
         $query = "SELECT
           c.id,
           c.title,
@@ -232,9 +232,58 @@ class ConferencesRepository
 
     /**
      * @param int $id
+     * @return array
+     */
+    public function getConferencePreview(int $id) : array{
+        $query = "SELECT
+          c.id,
+          c.title,
+          c.description,
+          c.start_time AS startTime,
+          c.end_time AS endTime,
+          c.owner_id AS ownerId,
+          c.is_dismissed AS isDismissed,
+          c.is_active AS isActive
+        FROM conferences AS c
+        WHERE c.id = ?";
+
+        $result = $this->db->prepare($query);
+        $result->execute([$id]);
+
+        return $result->fetch();
+    }
+
+    /**
+     * @param int $id
+     * @return bool
+     */
+    public function activate(int $id) : bool{
+        $query = "UPDATE conferences SET is_active = TRUE WHERE id = ?";
+
+        $result = $this->db->prepare($query);
+        $result->execute([$id]);
+
+        return $result->rowCount() > 0;
+    }
+
+    /**
+     * @param int $id
+     * @return bool
+     */
+    public function dismiss(int $id) : bool{
+        $query = "UPDATE conferences SET is_dismissed = TRUE WHERE id = ?";
+
+        $result = $this->db->prepare($query);
+        $result->execute([$id]);
+
+        return $result->rowCount() > 0;
+    }
+
+    /**
+     * @param int $id
      * @throws ApplicationException
      */
-    public function getById(int $id){
+    public function getById(int $id) : array{
         $query = "SELECT
           c.id,
           c.title,

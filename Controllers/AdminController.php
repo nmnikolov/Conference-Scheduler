@@ -12,6 +12,7 @@ use Framework\Models\BindingModels\CreateHallBindingModel;
 use Framework\Models\BindingModels\CreateVenueBindingModel;
 use Framework\Models\Hall;
 use Framework\Models\Venue;
+use Framework\Models\ViewModels\AdminApiViewModel;
 use Framework\Models\ViewModels\AdminChangeRoleViewModel;
 use Framework\Models\ViewModels\AdminConferencesViewModel;
 use Framework\Models\ViewModels\AdminCreateHallViewModel;
@@ -45,10 +46,9 @@ class AdminController extends BaseController
      * @@Admin
      */
     public function api(){
-        $actions = Scanner::getInstance()->getActions();
-        var_dump($actions);
-        exit;
-        $this->renderDefaultLayout();
+        $actions = Scanner::getInstance()->getCustomRoutes();
+        $viewModel = new AdminApiViewModel($actions);
+        $this->renderDefaultLayout($viewModel);
     }
 
     /**

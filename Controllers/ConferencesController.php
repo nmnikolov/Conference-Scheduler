@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Framework\Controllers;
 
+use DateTime;
 use Framework\Exceptions\ApplicationException;
 use Framework\Helpers\Helpers;
 use Framework\HttpContext\HttpContext;
@@ -10,6 +11,7 @@ use Framework\Models\BindingModels\CreateConferenceBindingModel;
 use Framework\Models\BindingModels\EditConferenceBindingModel;
 use Framework\Models\Conference;
 use Framework\Models\ViewModels\ConferenceDetailsViewModel;
+use Framework\Models\ViewModels\ConferencePreviewViewModel;
 use Framework\Models\ViewModels\ConferencesViewModel;
 use Framework\Models\ViewModels\EditConferenceViewModel;
 use Framework\Models\ViewModels\MyConferencesViewModel;
@@ -84,6 +86,8 @@ class ConferencesController extends BaseController
             $conference["ownerFullname"]
         );
 
+        $isConferenceOwner = $this->context->getIdentity()->getCurrentUser()->getId() === $owner->getId();
+
         $viewModel = new ConferenceDetailsViewModel(
             intval($conference["id"]),
             $conference["title"],
@@ -94,9 +98,9 @@ class ConferencesController extends BaseController
             $conference["isDismissed"] ? TRUE : FALSE,
             $owner,
             $venue,
+            $isConferenceOwner,
             []
         );
-
 
         $this->renderDefaultLayout($viewModel);
     }
@@ -130,6 +134,118 @@ class ConferencesController extends BaseController
             $_SESSION["binding-errors"] = [$e->getMessage()];
             $this->redirect("conferences/create");
         }
+    }
+
+    /**
+     * @@Authorize
+     * @param int $id
+     * @throws ApplicationException
+     */
+    public function activate(int $id){
+        $conference = ConferencesRepository::getInstance()->getConferencePreview($id);
+
+        if ($this->context->getIdentity()->getCurrentUser()->getId() !== $conference["ownerId"]) {
+            throw new ApplicationException("You don't have enough permissions to activate this conference!");
+        }
+        
+        if ($conference["isDismissed"]) {
+            throw new ApplicationException("Can't activate dismissed conference!");
+        }
+
+        if ($conference["isActive"]) {
+            throw new ApplicationException("Conference already activated!");
+        }
+
+        $viewModel = new ConferencePreviewViewModel(
+            intval($conference["id"]),
+            $conference["title"],
+            $conference["description"],
+            $conference["startTime"],
+            $conference["endTime"]
+        );
+
+        $this->renderDefaultLayout($viewModel);
+    }
+
+    /**
+     * @@Authorize
+     * @param int $id
+     * @throws ApplicationException
+     */
+    public function dismiss(int $id){
+        $conference = ConferencesRepository::getInstance()->getConferencePreview($id);
+
+        if ($this->context->getIdentity()->getCurrentUser()->getId() !== $conference["ownerId"]) {
+            throw new ApplicationException("You don't have enough permissions to dismiss this conference!");
+        }
+
+        if ($conference["isDismissed"]) {
+            throw new ApplicationException("Conference already activated!");
+        }
+
+        if (Date('Y-m-d H:i:s') > $conference["endTime"]) {
+            throw new ApplicationException("Cannot dismiss past conference!");
+        }
+
+        $viewModel = new ConferencePreviewViewModel(
+            intval($conference["id"]),
+            $conference["title"],
+            $conference["description"],
+            $conference["startTime"],
+            $conference["endTime"]
+        );
+
+        $this->renderDefaultLayout($viewModel);
+    }
+
+    /**
+     * @@Authorize
+     * @param int $id
+     * @throws ApplicationException
+     * @POST
+     */
+    public function dismissPst(int $id){
+        $conference = ConferencesRepository::getInstance()->getConferencePreview($id);
+
+        if ($this->context->getIdentity()->getCurrentUser()->getId() !== $conference["ownerId"]) {
+            throw new ApplicationException("You don't have enough permissions to dismiss this conference!");
+        }
+
+        if ($conference["isDismissed"]) {
+            throw new ApplicationException("Conference already activated!");
+        }
+
+        if (Date('Y-m-d H:i:s') > $conference["endTime"]) {
+            throw new ApplicationException("Cannot dismiss past conference!");
+        }
+
+        ConferencesRepository::getInstance()->dismiss($id);
+        $this->redirect("conferences/details/" . $id);
+    }
+
+    /**
+     * @@Authorize
+     * @param int $id
+     * @throws ApplicationException
+     * @POST
+     */
+    public function activatePst(int $id){
+        $conference = ConferencesRepository::getInstance()->getConferencePreview($id);
+
+        if ($this->context->getIdentity()->getCurrentUser()->getId() !== $conference["ownerId"]) {
+            throw new ApplicationException("You don't have enough permissions to activate this conference!");
+        }
+
+        if ($conference["isDismissed"]) {
+            throw new ApplicationException("Can't activate dismissed conference!");
+        }
+
+        if ($conference["isActive"]) {
+            throw new ApplicationException("Conference already activated!");
+        }
+
+        ConferencesRepository::getInstance()->activate($id);
+        $this->redirect("conferences/details/" . $id);
     }
 
     /**
