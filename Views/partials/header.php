@@ -34,8 +34,8 @@
                     <ul class="nav navbar-nav">
                         <li><a href="<?= \Framework\Helpers\Helpers::url() . 'home'?>"><span class="glyphicon glyphicon-home"></span></a></li>
                         <li><a href="<?= \Framework\Helpers\Helpers::url() . 'conferences/ongoing'?>" class="hvr-underline-reveal">Ongoing</a></li>
-                        <li><a href="<?= \Framework\Helpers\Helpers::url() . 'conferences/past'?>" class="hvr-underline-reveal">Past</a></li>
                         <li><a href="<?= \Framework\Helpers\Helpers::url() . 'conferences/future'?>" class="hvr-underline-reveal">Future</a></li>
+                        <li><a href="<?= \Framework\Helpers\Helpers::url() . 'conferences/past'?>" class="hvr-underline-reveal">Past</a></li>
                         <?php if(\Framework\HttpContext\HttpContext::getInstance()->getIdentity()->isLogged()): ?>
                             <li role="presentation" class="dropdown" id="admin-menu">
                                 <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">

@@ -2,6 +2,8 @@
 
 use Framework\HttpContext\HttpContext;
 
+date_default_timezone_set('Europe/Sofia');
+
 ini_set('display_errors', 1);
 
 session_start();

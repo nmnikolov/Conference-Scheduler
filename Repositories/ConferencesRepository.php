@@ -68,12 +68,12 @@ class ConferencesRepository
     }
 
     /**
-     * @param string $id
+     * @param int $id
      * @param Conference $conference
      * @return bool
      * @throws ApplicationException
      */
-    public function edit(string $id, Conference $conference) : bool {
+    public function edit(int $id, Conference $conference) : bool {
         if ($this->conferenceTitleExists($conference->getTitle(), $id)) {
             throw new ApplicationException("Conference with this title already exists!");
         }
@@ -114,6 +114,90 @@ class ConferencesRepository
 
         $result = $this->db->prepare($query);
         $result->execute([]);
+
+        return $result->fetchAll();
+    }
+
+    /**
+     * @return array
+     */
+    public function getOngoingConferences() : array {
+        $now = Date('Y-m-d H:i:s');
+
+        $query = "SELECT
+          c.id,
+          c.title,
+          c.description,
+          c.start_time AS startTime,
+          c.end_time AS endTime,
+          c.is_active AS isActive,
+          c.is_dismissed AS isDismissed,
+          v.id AS venueId,
+          v.name as venueName
+        FROM conferences AS c
+        LEFT JOIN venues AS v
+          on v.id = c.venue_id
+        WHERE c.start_time <= ? AND c.end_time >= ? AND c.is_active = TRUE AND c.is_dismissed = FALSE
+        ORDER BY c.end_time DESC";
+
+        $result = $this->db->prepare($query);
+        $result->execute([$now, $now]);
+
+        return $result->fetchAll();
+    }
+
+    /**
+     * @return array
+     */
+    public function getFutureConferences() : array {
+        $now = Date('Y-m-d H:i:s');
+
+        $query = "SELECT
+          c.id,
+          c.title,
+          c.description,
+          c.start_time AS startTime,
+          c.end_time AS endTime,
+          c.is_active AS isActive,
+          c.is_dismissed AS isDismissed,
+          v.id AS venueId,
+          v.name as venueName
+        FROM conferences AS c
+        LEFT JOIN venues AS v
+          on v.id = c.venue_id
+        WHERE c.start_time > ? AND c.is_active = TRUE AND c.is_dismissed = FALSE
+        ORDER BY c.start_time";
+
+        $result = $this->db->prepare($query);
+        $result->execute([$now]);
+
+        return $result->fetchAll();
+    }
+
+    /**
+     * @return array
+     */
+    public function getPastConferences() : array {
+        $now = Date('Y-m-d H:i:s');
+
+        $query = "SELECT
+          c.id,
+          c.title,
+          c.description,
+          c.start_time AS startTime,
+          c.end_time AS endTime,
+          c.is_active AS isActive,
+          c.is_dismissed AS isDismissed,
+          v.id AS venueId,
+          v.name as venueName
+        FROM conferences AS c
+        LEFT JOIN venues AS v
+          on v.id = c.venue_id
+        WHERE c.end_time < ? AND  c.is_active = TRUE AND c.is_dismissed = FALSE
+        ORDER BY c.end_time DESC";
+
+        $result = $this->db->prepare($query);
+        $result->execute([$now]);
 
         return $result->fetchAll();
     }
@@ -183,13 +267,11 @@ class ConferencesRepository
         return $result->fetch();
     }
 
-
-
     /**
      * @param string $conferenceTitle
      * @return bool
      */
-    private function conferenceTitleExists(string $conferenceTitle, string $id = "") : bool {
+    private function conferenceTitleExists(string $conferenceTitle, int $id = -1) : bool {
         $query = "SELECT id FROM conferences WHERE title = ? AND id != ?";
         $result = $this->db->prepare($query);
         $result->execute([$conferenceTitle, $id]);

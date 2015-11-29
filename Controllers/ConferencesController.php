@@ -9,6 +9,8 @@ use Framework\HttpContext\HttpContext;
 use Framework\Models\BindingModels\CreateConferenceBindingModel;
 use Framework\Models\BindingModels\EditConferenceBindingModel;
 use Framework\Models\Conference;
+use Framework\Models\ViewModels\ConferenceDetailsViewModel;
+use Framework\Models\ViewModels\ConferencesViewModel;
 use Framework\Models\ViewModels\EditConferenceViewModel;
 use Framework\Models\ViewModels\MyConferencesViewModel;
 use Framework\Models\ViewModels\UserProfileViewModel;
@@ -35,15 +37,21 @@ class ConferencesController extends BaseController
     }
 
     public function ongoing(){
-        $this->renderDefaultLayout();
+        $ongoingConferences = ConferencesRepository::getInstance()->getOngoingConferences();
+        $viewModel = new ConferencesViewModel($ongoingConferences);
+        $this->renderDefaultLayout($viewModel);
     }
 
     public function future(){
-        $this->renderDefaultLayout();
+        $futureConferences = ConferencesRepository::getInstance()->getFutureConferences();
+        $viewModel = new ConferencesViewModel($futureConferences);
+        $this->renderDefaultLayout($viewModel);
     }
 
     public function past(){
-        $this->renderDefaultLayout();
+        $pastConferences = ConferencesRepository::getInstance()->getPastConferences();
+        $viewModel = new ConferencesViewModel($pastConferences);
+        $this->renderDefaultLayout($viewModel);
     }
 
     /**
@@ -59,7 +67,38 @@ class ConferencesController extends BaseController
      */
     public function details(int $id){
         $conference = ConferencesRepository::getInstance()->getById($id);
-        $this->renderDefaultLayout();
+
+        $venue = new VenueViewModel();
+        if ($conference["venueId"]) {
+            $venue = new VenueViewModel(
+                $conference["venueId"],
+                $conference["venueName"],
+                $conference["venueDescription"],
+                $conference["venueAddress"]
+            );
+        }
+
+        $owner = new UserProfileViewModel(
+            $conference["ownerUsername"],
+            $conference["ownerId"],
+            $conference["ownerFullname"]
+        );
+
+        $viewModel = new ConferenceDetailsViewModel(
+            intval($conference["id"]),
+            $conference["title"],
+            $conference["description"],
+            $conference["startTime"],
+            $conference["endTime"],
+            $conference["isActive"] ? TRUE : FALSE,
+            $conference["isDismissed"] ? TRUE : FALSE,
+            $owner,
+            $venue,
+            []
+        );
+
+
+        $this->renderDefaultLayout($viewModel);
     }
 
     /**
@@ -156,8 +195,8 @@ class ConferencesController extends BaseController
                 $model->getDescription(),
                 $model->getStartTime(),
                 $model->getEndTime(),
-                $dbConference["ownerId"],
-                $model->getVenueId()
+                intval($dbConference["ownerId"]),
+                intval($model->getVenueId())
             );
 
             ConferencesRepository::getInstance()->edit($id, $conference);
