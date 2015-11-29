@@ -52,6 +52,7 @@ Built-in Annotations
 	- **@@Authorize** - checks for logged user. Redirects to users/login if there is no logged user.
 	- **@@Admin** - check if there is logged user and is in admin role (the name of the admin role can be changed from AppConfig class)
 	- **@@NotLogged** - check for logged user. Redirects to default controller and action if there is logged user.
+	- **@@Role(Admin,User)** - Separate roles with single comma. Will check both there is logged user and is in role Admin or role User.
 
 Binding Models Annotations
 ==========================
