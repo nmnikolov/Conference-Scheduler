@@ -74,3 +74,28 @@ h2 {
     margin-bottom: 10px;
 }
 
+.start-time-span{
+
+}
+
+.end-time-span{
+
+}
+
+.dismissed-span{
+    color: #8b0000;
+    font-weight: bold;
+    font-size: 1.2em;
+}
+
+.active-span{
+    color: #008000;
+    font-weight: bold;
+    font-size: 1.2em;
+}
+
+.inactive-span{
+    color: #ff6d07;
+    font-weight: bold;
+    font-size: 1.2em;
+}

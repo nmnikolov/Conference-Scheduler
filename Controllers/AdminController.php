@@ -3,6 +3,7 @@
 namespace Framework\Controllers;
 
 use Framework\Exceptions\ApplicationException;
+use Framework\Helpers\Scanner;
 use Framework\HttpContext\HttpContext;
 use Framework\Identity\RoleManager;
 use Framework\Identity\UserManager;
@@ -37,6 +38,16 @@ class AdminController extends BaseController
      * @@Admin
      */
     public function index(){
+        $this->renderDefaultLayout();
+    }
+
+    /**
+     * @@Admin
+     */
+    public function api(){
+        $actions = Scanner::getInstance()->getActions();
+        var_dump($actions);
+        exit;
         $this->renderDefaultLayout();
     }
 
@@ -102,6 +113,7 @@ class AdminController extends BaseController
         $viewModel = new AdminConferencesViewModel($conferences);
         $this->renderDefaultLayout($viewModel);
     }
+
 
     /**
      * @@Admin

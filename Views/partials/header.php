@@ -60,6 +60,7 @@
                                     <li><a href="<?= \Framework\Helpers\Helpers::url() . 'admin/conferences'?>" class="hvr-underline-reveal">Conferences</a></li>
                                     <li><a href="<?= \Framework\Helpers\Helpers::url() . 'admin/venues'?>" class="hvr-underline-reveal">Venues</a></li>
                                     <li><a href="<?= \Framework\Helpers\Helpers::url() . 'admin/halls'?>" class="hvr-underline-reveal">Halls</a></li>
+                                    <li><a href="<?= \Framework\Helpers\Helpers::url() . 'admin/api'?>" class="hvr-underline-reveal">Api</a></li>
                                 </ul>
                             </li>
                         <?php endif; ?>

@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Framework\Models\ViewModels;
 
@@ -10,6 +11,7 @@ class EditConferenceViewModel
     private $startTime;
     private $endTime;
     private $isActive;
+    private $isDismissed;
     private $owner;
     private $venue;
     private $venues;
@@ -23,6 +25,7 @@ class EditConferenceViewModel
      * @param string|string $startTime
      * @param string|string $endTime
      * @param bool|bool $isActive
+     * @param bool $isDismissed
      * @param UserProfileViewModel $owner
      * @param VenueViewModel $venue
      * @param array $venues
@@ -35,6 +38,7 @@ class EditConferenceViewModel
             string $startTime,
             string $endTime,
             bool $isActive,
+            bool $isDismissed,
             UserProfileViewModel $owner,
             VenueViewModel $venue,
             array $venues,
@@ -45,6 +49,7 @@ class EditConferenceViewModel
         $this->startTime = $startTime;
         $this->endTime = $endTime;
         $this->isActive = $isActive;
+        $this->isDismissed = $isDismissed;
         $this->owner = $owner;
         $this->venue = $venue;
         $this->venues = $venues;
@@ -91,6 +96,13 @@ class EditConferenceViewModel
      */
     public function getIsActive() : bool {
         return $this->isActive;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getIsDismissed() : bool {
+        return $this->isDismissed;
     }
 
     /**

@@ -68,6 +68,32 @@ class ConferencesRepository
     }
 
     /**
+     * @param string $id
+     * @param Conference $conference
+     * @return bool
+     * @throws ApplicationException
+     */
+    public function edit(string $id, Conference $conference) : bool {
+        if ($this->conferenceTitleExists($conference->getTitle(), $id)) {
+            throw new ApplicationException("Conference with this title already exists!");
+        }
+
+        $query = "UPDATE conferences SET title = ?, description =? , start_time = ?, end_time = ?, venue_id = ?
+        WHERE id = ?";
+        $result = $this->db->prepare($query);
+        $result->execute([
+            $conference->getTitle(),
+            $conference->getDescription(),
+            $conference->getStartTime(),
+            $conference->getEndTime(),
+            $conference->getVenueId(),
+            $id
+        ]);
+
+        return $result->rowCount() > 0;
+    }
+
+    /**
      * @return array
      */
     public function getAllConferences(){
@@ -78,6 +104,7 @@ class ConferencesRepository
           c.start_time AS startTime,
           c.end_time AS endTime,
           c.is_active AS isActive,
+          c.is_dismissed AS isDismissed,
           v.id AS venueId,
           v.name as venueName
         FROM conferences AS c
@@ -87,6 +114,34 @@ class ConferencesRepository
 
         $result = $this->db->prepare($query);
         $result->execute([]);
+
+        return $result->fetchAll();
+    }
+
+    /**
+     * @param int $userId
+     * @return array
+     */
+    public function getUserConferencesPreview(int $userId){
+        $query = "SELECT
+          c.id,
+          c.title,
+          c.description,
+          c.start_time AS startTime,
+          c.end_time AS endTime,
+          c.is_active AS isActive,
+          c.is_dismissed AS isDismissed,
+          v.id AS venueId,
+          v.name as venueName
+        FROM conferences AS c
+        LEFT JOIN venues AS v
+          on v.id = c.venue_id
+        WHERE c.owner_id = ?
+        ORDER BY c.start_time DESC";
+
+
+        $result = $this->db->prepare($query);
+        $result->execute([$userId]);
 
         return $result->fetchAll();
     }
@@ -103,6 +158,7 @@ class ConferencesRepository
           c.start_time as startTime,
           c.end_time as endTime,
           c.is_active as isActive,
+          c.is_dismissed as isDismissed,
           u.id as ownerId,
           u.username as ownerUsername,
           u.fullname as ownerFullname,
@@ -127,14 +183,16 @@ class ConferencesRepository
         return $result->fetch();
     }
 
+
+
     /**
      * @param string $conferenceTitle
      * @return bool
      */
-    private function conferenceTitleExists(string $conferenceTitle) : bool {
-        $query = "SELECT id FROM conferences WHERE title = ?";
+    private function conferenceTitleExists(string $conferenceTitle, string $id = "") : bool {
+        $query = "SELECT id FROM conferences WHERE title = ? AND id != ?";
         $result = $this->db->prepare($query);
-        $result->execute([$conferenceTitle]);
+        $result->execute([$conferenceTitle, $id]);
 
         return $result->rowCount() > 0;
     }

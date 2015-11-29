@@ -45,30 +45,29 @@ if(isset($_SESSION["binding-errors"]) && count($_SESSION["binding-errors"]) > 0)
             </div>
         </div>
     </div>
-    <?php if($model->getVenue()->getId() === ""): ?>
         <div class="form-group col-md-7">
             <label class="col-md-3 control-label" for="venue">Venue</label>
             <div class="col-md-9 input-group">
-                <select id="venue" class="form-control input-group" name="venue">
-                    <option>-- Select venue --</option>
+                <select id="venue" class="form-control input-group" name="venueId" required>
+                    <option value="">-- Select venue --</option>
                     <?php foreach($model->getVenues() as $venue): ?>
-                        <option value="<?= $venue["id"]; ?>"><?= $venue["name"]; ?></option>
+                        <?php $selected = $venue["id"] === $model->getVenue()->getId() ? "selected" : ""; ?>
+                        <option value="<?= $venue["id"]; ?>" <?= $selected ?>><?= $venue["name"]; ?></option>
                     <?php endforeach; ?>
                 </select>
             </div>
         </div>
-    <?php else: ?>
-        <div class="form-group col-md-7">
-            <label class="col-md-3 control-label" for="title">Venue</label>
-            <div class="input-group col-md-9">
-                <input class="form-control input-group" id="title" name="venueName" type="text" value="<?= $model->getVenue()->getName(); ?>" required>
-            </div>
-        </div>
-    <?php endif; ?>
     <div class="form-group  col-md-7">
         <div class="col-md-offset-2 col-md-10">
-            <input type="submit" class="btn btn-primary" value="Save">
-            <a class="btn btn-default" href="<?= \Framework\Helpers\Helpers::url() . "conferences/my" ?>">Cancel</a>
+            <?php if($model->getIsDismissed()): ?>
+                <a class="btn btn-danger" href="<?= \Framework\Helpers\Helpers::url() . "conferences/details/" . $model->getId(); ?> ?>">Back to conference</a>
+            <?php else: ?>
+                <input type="submit" class="btn btn-primary" value="Save">
+                <?php if(!$model->getIsActive()): ?>
+                    <a class="btn btn-success" href="<?= \Framework\Helpers\Helpers::url() . "conferences/activate/" . $model->getId(); ?>">Activate</a>
+                <?php endif; ?>
+                <a class="btn btn-default" href="<?= \Framework\Helpers\Helpers::url() . "conferences/details/" . $model->getId(); ?>">Cancel</a>
+            <?php endif; ?>
         </div>
     </div>
 </form>

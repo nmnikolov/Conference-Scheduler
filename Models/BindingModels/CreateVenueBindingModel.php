@@ -15,7 +15,7 @@ class CreateVenueBindingModel
     /**
      * @Required
      * @MinLength(2)
-     * @MaxLength(30)
+     * @MaxLength(255)
      * @Display(Venue Description)
      */
     private $description;
@@ -23,7 +23,7 @@ class CreateVenueBindingModel
     /**
      * @Required
      * @MinLength(5)
-     * @MaxLength(30)
+     * @MaxLength(255)
      * @Display(Venue Address)
      */
     private $address;

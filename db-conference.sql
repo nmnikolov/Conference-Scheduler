@@ -39,6 +39,7 @@ CREATE TABLE `conferences` (
     start_time DATETIME NOT NULL,
     end_time DATETIME NOT NULL,
     is_active BOOL NOT NULL DEFAULT FALSE,
+    is_dismissed BOOL NOT NULL DEFAULT FALSE,
     owner_id INT NOT NULL,
     venue_id INT,
     FOREIGN KEY (owner_id) REFERENCES users(id),
@@ -125,11 +126,18 @@ SELECT
     c.description,
     c.start_time as startTime,
     c.end_time as endTime,
+    u.id as ownerId,
+    u.username as ownerUsername,
+    u.fullname as ownerFullname,
     v.id as venueId,
     v.description as venueDescription,
     v.address as venueAddress,
     v.name as venueName
 FROM conferences AS c
+    JOIN users AS u
+        ON u.id = c.owner_id
     LEFT JOIN venues AS v
         ON v.id = c.venue_id
 WHERE c.id = 10
+
+UPDATE conferences SET title = ?, description =? , start_time = ?, end_time = ?, venue_id = ?

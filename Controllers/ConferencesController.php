@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Framework\Controllers;
 
@@ -6,10 +7,10 @@ use Framework\Exceptions\ApplicationException;
 use Framework\Helpers\Helpers;
 use Framework\HttpContext\HttpContext;
 use Framework\Models\BindingModels\CreateConferenceBindingModel;
+use Framework\Models\BindingModels\EditConferenceBindingModel;
 use Framework\Models\Conference;
-use Framework\Models\ViewModels\CreateConferenceViewModel;
 use Framework\Models\ViewModels\EditConferenceViewModel;
-use Framework\Models\ViewModels\EditConferenceViewModelViewModel;
+use Framework\Models\ViewModels\MyConferencesViewModel;
 use Framework\Models\ViewModels\UserProfileViewModel;
 use Framework\Models\ViewModels\VenueViewModel;
 use Framework\Repositories\ConferencesRepository;
@@ -34,15 +35,22 @@ class ConferencesController extends BaseController
     }
 
     public function ongoing(){
-
+        $this->renderDefaultLayout();
     }
 
     public function future(){
-
+        $this->renderDefaultLayout();
     }
 
     public function past(){
+        $this->renderDefaultLayout();
+    }
 
+    /**
+     * @@Authorize
+     */
+    public function participating(){
+        $this->renderDefaultLayout();
     }
 
     /**
@@ -51,8 +59,6 @@ class ConferencesController extends BaseController
      */
     public function details(int $id){
         $conference = ConferencesRepository::getInstance()->getById($id);
-        var_dump($conference);
-        exit;
         $this->renderDefaultLayout();
     }
 
@@ -76,7 +82,7 @@ class ConferencesController extends BaseController
                 $model->getDescription(),
                 $model->getStartTime(),
                 $model->getEndTime(),
-                HttpContext::getInstance()->getIdentity()->getCurrentUser()->getId()
+                intval(HttpContext::getInstance()->getIdentity()->getCurrentUser()->getId())
             );
 
             $conferenceId = ConferencesRepository::getInstance()->create($conference);
@@ -121,6 +127,7 @@ class ConferencesController extends BaseController
             $conference["startTime"],
             $conference["endTime"],
             $conference["isActive"] ? TRUE : FALSE,
+            $conference["isDismissed"] ? TRUE : FALSE,
             $owner,
             $venue,
             $activeVenues,
@@ -132,8 +139,43 @@ class ConferencesController extends BaseController
 
     /**
      * @@Authorize
+     * @POST
+     * @param int $id
+     * @param EditConferenceBindingModel $model
+     * @throws ApplicationException
+     */
+    public function editPst(int $id, EditConferenceBindingModel $model){
+        try {
+            $dbConference = ConferencesRepository::getInstance()->getById($id);
+            if ($dbConference["ownerId"] !== $this->context->getIdentity()->getCurrentUser()->getId()) {
+                throw new ApplicationException("Your are now allowed to edit this conference!");
+            }
+
+            $conference = new Conference(
+                $model->getTitle(),
+                $model->getDescription(),
+                $model->getStartTime(),
+                $model->getEndTime(),
+                $dbConference["ownerId"],
+                $model->getVenueId()
+            );
+
+            ConferencesRepository::getInstance()->edit($id, $conference);
+            $this->redirect("conferences/details/" . $id);
+        } catch (ApplicationException $e){
+            $_SESSION["binding-errors"] = [$e->getMessage()];
+            $this->redirect("conferences/edit/" . $id);
+        }
+    }
+
+    /**
+     * @@Authorize
      */
     public function my(){
-        $this->renderDefaultLayout();
+        $userId = $this->context->getIdentity()->getCurrentUser()->getId();
+        $userConferences = ConferencesRepository::getInstance()->getUserConferencesPreview(intval($userId));
+//        var_dump($userConferences);
+        $viewModel = new MyConferencesViewModel($userConferences);
+        $this->renderDefaultLayout($viewModel);
     }
 }
