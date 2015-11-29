@@ -34,23 +34,23 @@
                 <?= $i ?>
             </td>
             <td>
-                <?= $venue["name"] ?>
+                <?= htmlspecialchars($venue["name"]); ?>
             </td>
             <td>
-                <?= $venue["description"] ?>
+                <?= htmlspecialchars($venue["description"]); ?>
             </td>
             <td>
-                <?= $venue["address"] ?>
+                <?= htmlspecialchars($venue["address"]); ?>
             </td>
             <td>
                 <?= $venue["isActive"] ? "Active" : "Inactive" ?>
             </td>
             <td>
                 <?php if ($venue["isActive"]): ?>
-                    <a href="<?= \Framework\Helpers\Helpers::url() . "admin/venues/" . $venue["id"] . "/edit" ?>">Edit</a> |
-                    <a href="<?= \Framework\Helpers\Helpers::url() . "admin/venues/" . $venue["id"] . "/deactivate" ?>">Deactivate</a>
+                    <a href="<?= \Framework\Helpers\Helpers::url() . "admin/venues/" . htmlspecialchars($venue["id"]) . "/edit" ?>">Edit</a> |
+                    <a href="<?= \Framework\Helpers\Helpers::url() . "admin/venues/" . htmlspecialchars($venue["id"]) . "/deactivate" ?>">Deactivate</a>
                 <?php else: ?>
-                    <a href="<?= \Framework\Helpers\Helpers::url() . "admin/venues/" . $venue["id"] . "/activate" ?>">Activate</a>
+                    <a href="<?= \Framework\Helpers\Helpers::url() . "admin/venues/" . htmlspecialchars($venue["id"]) . "/activate" ?>">Activate</a>
                 <?php endif; ?>
             </td>
         </tr>

@@ -37,19 +37,19 @@
                 <?= $i ?>
             </td>
             <td>
-                <?= $conference["title"]; ?>
+                <?= htmlspecialchars($conference["title"]); ?>
             </td>
             <td>
-                <?= $conference["description"]; ?>
+                <?= htmlspecialchars($conference["description"]); ?>
             </td>
             <td>
-                <?= $conference["startTime"]; ?>
+                <?= htmlspecialchars($conference["startTime"]); ?>
             </td>
             <td>
-                <?= $conference["endTime"]; ?>
+                <?= htmlspecialchars($conference["endTime"]); ?>
             </td>
             <td>
-                <?= $conference["venueName"] ? $conference["venueName"] : "-"; ?>
+                <?= $conference["venueName"] ? htmlspecialchars($conference["venueName"]) : "-"; ?>
             </td>
             <td>
                 <?= $conference["isActive"] ? "Active" : "Inactive"; ?>

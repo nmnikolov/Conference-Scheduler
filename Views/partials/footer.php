@@ -17,23 +17,9 @@
     });
 </script>
 
-<!--<script type="text/javascript">-->
-<!--    $(document).on('click', '.date-picker', function (e) {-->
-<!--        var date = new Date();-->
-<!--        var tomorrow = new Date(date.getTime() + 24 * 60 * 60 * 1000);-->
-<!--        $(this).datetimepicker({-->
-<!--            minDate: tomorrow,-->
-<!--            sideBySide: true,-->
-<!--            showClear: true,-->
-<!--            format: 'YYYY-MM-DD HH:mm'-->
-<!--        });-->
-<!--    });-->
-<!--</script>-->
-
 <script type="text/javascript">
     $(function () {
         var date = new Date();
-//        var oneHour = new Date(date.getTime() + 60 * 60 * 1000);
 
         var start = $('#start-time-picker');
         var end = $('#end-time-picker');

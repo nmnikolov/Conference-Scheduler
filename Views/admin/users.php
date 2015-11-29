@@ -29,16 +29,16 @@
                 <?= $i ?>
             </td>
             <td>
-                <?= $user["username"] ?>
+                <?= htmlspecialchars($user["username"]); ?>
             </td>
             <td>
-                <?= $user["fullname"] ?>
+                <?= htmlspecialchars($user["fullname"]); ?>
             </td>
             <td>
-                <?= $user["roleName"] ?>
+                <?= htmlspecialchars($user["roleName"]); ?>
             </td>
             <td>
-                <a href="<?= \Framework\Helpers\Helpers::url() . "admin/users/" . $user["id"] . "/role/edit"?>">Change role</a>
+                <a href="<?= \Framework\Helpers\Helpers::url() . "admin/users/" . htmlspecialchars($user["id"]) . "/role/edit"?>">Change role</a>
             </td>
         </tr>
     <?php endforeach; ?>

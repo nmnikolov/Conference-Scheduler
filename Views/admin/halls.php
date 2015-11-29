@@ -33,23 +33,23 @@
                 <?= $i ?>
             </td>
             <td>
-                <?= $hall["name"] ?>
+                <?= htmlspecialchars($hall["name"]); ?>
             </td>
             <td>
-                <?= $hall["capacity"] ?>
+                <?= htmlspecialchars($hall["capacity"]); ?>
             </td>
             <td>
-                <?= $hall["venue"] ?>
+                <?= htmlspecialchars($hall["venue"]); ?>
             </td>
             <td>
                 <?= $hall["isActive"] ? "Active" : "Inactive" ?>
             </td>
             <td>
                 <?php if ($hall["isActive"]): ?>
-                    <a href="<?= \Framework\Helpers\Helpers::url() . "admin/halls/" . $hall["id"] . "/edit" ?>">Edit</a> |
-                    <a href="<?= \Framework\Helpers\Helpers::url() . "admin/halls/" . $hall["id"] . "/deactivate" ?>">Deactivate</a>
+                    <a href="<?= \Framework\Helpers\Helpers::url() . "admin/halls/" . htmlspecialchars($hall["id"]) . "/edit" ?>">Edit</a> |
+                    <a href="<?= \Framework\Helpers\Helpers::url() . "admin/halls/" . htmlspecialchars($hall["id"]) . "/deactivate" ?>">Deactivate</a>
                 <?php else: ?>
-                    <a href="<?= \Framework\Helpers\Helpers::url() . "admin/halls/" . $hall["id"] . "/activate" ?>">Activate</a>
+                    <a href="<?= \Framework\Helpers\Helpers::url() . "admin/halls/" . htmlspecialchars($hall["id"]) . "/activate" ?>">Activate</a>
                 <?php endif; ?>
             </td>
         </tr>

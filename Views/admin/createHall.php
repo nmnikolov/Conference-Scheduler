@@ -29,7 +29,7 @@ if(isset($_SESSION["binding-errors"]) && count($_SESSION["binding-errors"]) > 0)
             <select class="form-control" name="venueId" required>
                 <option value="">-- Select Venue --</option>-->
                 <?php foreach($model->getVenues() as $venue):?>
-                    <option value="<?= intval($venue["id"])?>"><?= $venue["name"]; ?></option>
+                    <option value="<?= htmlspecialchars(intval($venue["id"]))?>"><?= htmlspecialchars($venue["name"]); ?></option>
                 <?php endforeach; ?>
             </select>
         </div>

@@ -4,6 +4,6 @@
     <span class="sr-only">Error:</span>
     <strong>Error!</strong>
     <?php foreach($_SESSION["binding-errors"] as $error): ?>
-    <p> <?= $error ?></p>
+    <p> <?= htmlspecialchars($error) ?></p>
     <?php endforeach; ?>
 </div>
